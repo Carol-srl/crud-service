@@ -1,5 +1,7 @@
 # Custom ignores
-
+*.env
+secrets/
+mount/
 .tap
 .local
 

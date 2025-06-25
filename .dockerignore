@@ -26,3 +26,23 @@ eslint.config.mjs
 README.md
 .clinic
 *.log
+
+# Ignore local env and secrets
+local.env
+secrets/
+
+# Ignore coverage and build artifacts
+coverage/
+
+# Ignore OS and editor files
+.DS_Store
+
+# Ignore infra and terraform
+infra/
+
+# Ignore license and changelog
+LICENSE
+CHANGELOG.md
+
+# Ignore markdown
+*.md

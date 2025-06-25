@@ -47,6 +47,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install --assume-yes --no-install-recommends \
     tini \
+    awscli \
     && apt-get autoremove --assume-yes \
     && rm -rf /var/lib/apt/lists/*
 
@@ -63,13 +64,25 @@ WORKDIR /home/node/app
 
 COPY --from=build /build-dir ./
 
-HEALTHCHECK --start-period=5s CMD wget -qO- http://localhost:${HTTP_PORT}/-/healthz &> /dev/null || exit 1
+# Bootstrap script to download files from S3 before running the app
+COPY run.sh /usr/local/bin/bootstrap-and-run.sh
+RUN chmod +x /usr/local/bin/bootstrap-and-run.sh
+RUN mkdir disk && chown node:node disk
+
+# Set environment variables for S3 bootstrap
+ENV S3_USE_IAM_ROLE=false \
+    S3_REGION=us-east-1 \
+    S3_BUCKET=my-bucket
+
+# Update healthcheck start period to allow for S3 download
+HEALTHCHECK --start-period=60s CMD wget -qO- http://localhost:${HTTP_PORT}/-/healthz &> /dev/null || exit 1
 
 USER node
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
 
-CMD ./node_modules/.bin/lc39 ./index.js --port=${HTTP_PORT} --log-level=${LOG_LEVEL} --prefix=${SERVICE_PREFIX} --expose-metrics=${EXPOSE_METRICS} --enable-tracing=${ENABLE_TRACING}
+#CMD ["./node_modules/.bin/lc39", "./index.js", "--port=${HTTP_PORT}", "--log-level=${LOG_LEVEL}", "--prefix=${SERVICE_PREFIX}", "--expose-metrics=${EXPOSE_METRICS}", "--enable-tracing=${ENABLE_TRACING}"]
+CMD ["/usr/local/bin/bootstrap-and-run.sh"]
 
 ########################################################################################################################
 
