@@ -1,5 +1,5 @@
 # Build with secrets (expects secrets in ./secrets dir)
-docker build --platform linux/amd64 -t crud-service . \
+docker build --platform linux/amd64 -t engineeringcarol/crud-service . \
   --secret id=aws_access_key_id,src=./secrets/aws_access_key_id \
   --secret id=aws_secret_access_key,src=./secrets/aws_secret_access_key
 
@@ -11,4 +11,5 @@ docker run --rm --name crud-service \
            --env-file=build.env \
            --mount type=bind,source=$(pwd)/secrets,target=/run/secrets,readonly \
            --publish 3000:3000 \
-           crud-service:latest
+           --network carol-cluster_default \
+           engineeringcarol/crud-service:latest
