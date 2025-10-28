@@ -3,8 +3,8 @@ resource "aws_ecs_task_definition" "this" {
   execution_role_arn       = data.terraform_remote_state.main_infra.outputs.ecs_task_execution_role_arn
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = var.fargate_cpu
-  memory                   = var.fargate_memory
+  cpu                      = 512
+  memory                   = 2048
   container_definitions = jsonencode([
     {
       name      = "crud-service"

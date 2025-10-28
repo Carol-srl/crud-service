@@ -2,7 +2,7 @@
 variable "image" {
   description = "Docker image URL for the Carol Nest service"
   type        = string
-  default     = "nginx:latest"
+  default     = "972096737302.dkr.ecr.eu-west-3.amazonaws.com/carol/crud-service:6.5.0"
 }
 
 variable "port" {
@@ -12,21 +12,11 @@ variable "port" {
 
 variable "task_count" {
   description = "Number of docker containers to run"
-  default     = 1
+  default     = 2
 }
 
 variable "health_check_path" {
   default = "/bff/services/health"
-}
-
-variable "fargate_cpu" {
-  description = "Fargate instance CPU units to provision (1 vCPU = 1024 CPU units)"
-  default     = "1024"
-}
-
-variable "fargate_memory" {
-  description = "Fargate instance memory to provision (in MiB)"
-  default     = "1024"
 }
 
 variable "COLLECTION_DEFINITION_FOLDER" {
