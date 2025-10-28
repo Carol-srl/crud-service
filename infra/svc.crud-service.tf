@@ -30,8 +30,21 @@ resource "aws_ecs_task_definition" "this" {
         { name = "VIEWS_DEFINITION_FOLDER", value = var.VIEWS_DEFINITION_FOLDER },
         { name = "USER_ID_HEADER_KEY", value = var.USER_ID_HEADER_KEY },
         { name = "CRUD_LIMIT_CONSTRAINT_ENABLED", value = tostring(var.CRUD_LIMIT_CONSTRAINT_ENABLED) },
-        { name = "CRUD_MAX_LIMIT", value = tostring(var.CRUD_MAX_LIMIT) }
+        { name = "CRUD_MAX_LIMIT", value = tostring(var.CRUD_MAX_LIMIT) },
+        { name = "S3_BUCKET", value = "carol-crud-service-definitions" },
+        { name = "S3_REGION", value = "eu-west-3" },
+        { name = "S3_USE_IAM_ROLE", value = "true" }
       ]
+
+      healthCheck = {
+        command = [
+          "CMD-SHELL", "exit 0",
+        ]
+        interval    = 30
+        retries     = 3
+        startPeriod = 60
+        timeout     = 5
+      }
 
       logConfiguration = {
         logDriver = "awslogs"
@@ -46,7 +59,7 @@ resource "aws_ecs_task_definition" "this" {
 }
 
 resource "aws_ecs_service" "this" {
-  name            = "crud-service"
+  name            = "crud"
   cluster         = data.terraform_remote_state.main_infra.outputs.ecs_cluster_id
   task_definition = aws_ecs_task_definition.this.arn
   desired_count   = var.task_count
