@@ -19,7 +19,7 @@
 const tap = require('tap')
 const { ObjectId } = require('mongodb')
 
-const { STATES, __STATE__ } = require('../lib/consts')
+const { STATES, STATE } = require('../lib/consts')
 const {
   fixtures,
   stationFixtures,
@@ -102,12 +102,6 @@ tap.test('HTTP GET /<id>', async t => {
       acl_rows: undefined,
       acl_read_columns: undefined,
       found: false,
-    },
-    {
-      name: 'with stringified ISO Date in query filter',
-      url: `/${ID}?_q=${JSON.stringify({ 'editionsDates.date': { $lt: new Date('2020').toISOString() } })}`,
-      acl_rows: undefined,
-      found: HTTP_DOC,
     },
     {
       name: 'with acl_rows',
@@ -492,24 +486,22 @@ tap.test('HTTP GET /<id> with string id', async t => {
 })
 
 tap.test('HTTP GET', async t => {
-  const { fastify, resetCollection } = await setUpTest(t, null, 'books', undefined, true)
+  const { fastify, resetCollection } = await setUpTest(t, null, 'books')
 
   t.test('/:id cast correctly nested object with schema', async t => {
     const DOC_TEST = {
-      ...fixtures[0],
+      ...DOC,
       _id: ObjectId.createFromHexString('211111111111111111111111'),
       metadata: {
         somethingNumber: '3333',
       },
-      attachments: [
-        {
-          name: 'the-note',
-          detail: {
-            size: '6',
-          },
+      attachments: [{
+        name: 'the-note',
+        detail: {
+          size: '6',
         },
-      ],
-      [__STATE__]: STATES.PUBLIC,
+      }],
+      [STATE]: STATES.PUBLIC,
     }
 
     await resetCollection([DOC_TEST])
@@ -543,7 +535,7 @@ tap.test('HTTP GET', async t => {
         }],
         somethingArrayOfNumbers: [5],
       },
-      [__STATE__]: STATES.PUBLIC,
+      [STATE]: STATES.PUBLIC,
     }
     const DOC_TEST_NO_MATCH = {
       ...fixtures[0],
@@ -556,7 +548,7 @@ tap.test('HTTP GET', async t => {
         }],
         somethingArrayOfNumbers: [5],
       },
-      [__STATE__]: STATES.PUBLIC,
+      [STATE]: STATES.PUBLIC,
     }
 
     await resetCollection([DOC_TEST, DOC_TEST_NO_MATCH])
@@ -595,7 +587,7 @@ tap.test('HTTP GET', async t => {
         }],
         somethingArrayOfNumbers: [5],
       },
-      [__STATE__]: STATES.PUBLIC,
+      [STATE]: STATES.PUBLIC,
     }
 
     await resetCollection([DOC_TEST])
@@ -673,31 +665,3 @@ tap.test('HTTP GET', async t => {
 
   t.end()
 })
-
-tap.test('HTTP GET /<id> shouldn\'t return fields not included in schema', async t => {
-  const fixtureWithNotDefinedField = {
-    ...STATION_DOC,
-    UnknownField: 'unknownValue',
-  }
-
-  const { fastify } = await setUpTest(t, [fixtureWithNotDefinedField], 'stations', undefined, true)
-
-  const expectedResponse = {
-    _id: STATION_ID,
-    Comune: 'Borgonato',
-  }
-
-  const response = await fastify.inject({
-    method: 'GET',
-    url: `${stationsPrefix}/${STATION_ID}?_p=UnknownField,Comune`,
-    headers: {},
-  })
-
-  t.strictSame(response.statusCode, (200))
-  t.ok(/application\/json/.test(response.headers['content-type']))
-  t.strictSame(JSON.parse(response.payload), expectedResponse)
-
-  t.end()
-})
-
-

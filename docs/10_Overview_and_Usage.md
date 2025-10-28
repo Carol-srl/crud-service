@@ -12,32 +12,6 @@ It's possible to configure CRUD Service with more than one collection and to sca
 
 CRUD Service is available also as an Open Source Software (OSS), you can find the official repository [here](https://github.com/mia-platform/crud-service).
 
-## Table of Contents
-
-1. [Introduction](#introduction)
-    1. [Conventions](#conventions)
-2. [CRUD Collection Properties](#crud-collection-properties)
-    1. [Predefined Collection Properties](#predefined-collection-properties)
-    2. [Collection Properties Types](#collection-properties-types)
-    3. [Collection document properties](#collection-document-properties)
-    4. [Indexes](#indexes)
-3. [CRUD Headers](#crud-headers)
-4. [CRUD Security](#crud-security)
-    1. [Expose a CRUD Service](#expose-a-crud-service)
-    2. [API Key](#api-key)
-4. [CRUD Endpoints](#crud-endpoints)
-    1. [Create](#create)
-    2. [Read](#read)
-    3. [Update](#update)
-    4. [Delete](#delete)
-    5. [Import](#import)
-    6. [Export](#export)
-    7. [Get Schemas](#get-schemas)
-    8. [RawObject and Array_RawObject with schemas](#rawobject-and-array_rawobject-with-schemas)
-    9. [CRUD Limits](#crud-limits)
-    10. [Response codes of CRUD](#response-codes-of-crud)
-
-
 ## Introduction
 
 The CRUD Service is a microservice that exposes via Restful API a set of MongoDB Collection. CRUD Service is configured in the Console.
@@ -50,7 +24,6 @@ Via APIs it's possible to:
 - create a new element in a collection (also with a bulk action);
 - update one or more elements of a collection;
 - delete one or more elements of a collection.
-- import elements from a file csv, json or ndjson into a collection
 
 The following guide will help you to get familiar with the APIs of the CRUD Service.
 
@@ -90,14 +63,14 @@ All properties can be indexed to speed up the data retrieval. The indexes config
 
 CRUD by default comes with a set of common properties that simplify the data management:
 
-| Property        | Type   | Description                                                                                                                                                                                                                                                   |
-| --------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`_id`**       | String | Unique 24 character length hexadecimal String that identifies a document in the collection.                                                                                                                                                                   |
-| **`creatorId`** | String | Id of the user who created the document.                                                                                                                                                                                                                      |
-| **`createdAt`** | Date   | Date and time when the document has been created.                                                                                                                                                                                                             |
-| **`updaterId`** | String | Id of the user who last updated the document; this information is overwritten every time the document is updated.                                                                                                                                             |
-| **`updatedAt`** | Date   | Date and time when the document has been updated; this information is overwritten every time the document is updated.                                                                                                                                         |
-| **`__STATE__`** | String | The current state of the document: can be one of `PUBLIC`, `DRAFT`, `TRASH`, `DELETED`. The state of the document can't be set directly, but can be changed via the dedicated REST API call. Allowed transitions are [illustrated below](#state-transitions). |
+| Property          | Type   | Description                                                                                                                                                                                                                                                                            |
+|-------------------|--------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **`_id`**         | String | Unique 24 character length hexadecimal String that identifies a document in the collection.                                                                                                                                                                                            |
+| **`creatorId`**   | String | Id of the user who created the document.                                                                                                                                                                                                                                               |
+| **`createdAt`**   | Date   | Date and time when the document has been created.                                                                                                                                                                                                                                      |
+| **`updaterId`**   | String | Id of the user who last updated the document; this information is overwritten every time the document is updated.                                                                                                                                                                      |
+| **`updatedAt`**   | Date   | Date and time when the document has been updated; this information is overwritten every time the document is updated.                                                                                                                                                                  |
+| **`__STATE__`**   | String | The current state of the document: can be one of `PUBLIC`, `DRAFT`, `TRASH`, `DELETED`. The state of the document can't be set directly, but can be changed via the dedicated REST API call. Allowed transitions are [illustrated below](#state-transitions). |
 
 :::note
 The only two default fields that it is possible to encrypt are `updaterId` and `creatorId`.
@@ -105,14 +78,14 @@ The only two default fields that it is possible to encrypt are `updaterId` and `
 
 Furthermore, you can edit the default fields in a limited way, in particular:
 
-| Property        | Description | Encryption settings | GDPR sensitivity | GDPR description |
-| --------------- | ----------- | ------------------- | ---------------- | ---------------- |
-| **`_id`**       | OK          | -                   | OK               | OK               |
-| **`creatorId`** | OK          | OK                  | OK               | OK               |
-| **`createdAt`** | OK          | -                   | OK               | OK               |
-| **`updaterId`** | OK          | OK                  | OK               | OK               |
-| **`updatedAt`** | OK          | -                   | OK               | OK               |
-| **`__STATE__`** | OK          | -                   | OK               | OK               |
+| Property          | Description | Encryption settings | GDPR sensitivity | GDPR description |
+|-----------------  |-------------|---------------------|------------------|------------------|
+| **`_id`**         | OK          | -                   | OK               | OK               |
+| **`creatorId`**   | OK          | OK                  | OK               | OK               |
+| **`createdAt`**   | OK          | -                   | OK               | OK               |
+| **`updaterId`**   | OK          | OK                  | OK               | OK               |
+| **`updatedAt`**   | OK          | -                   | OK               | OK               |
+| **`__STATE__`**   | OK          | -                   | OK               | OK               |
 
 For the `_id` field you can also change the `type`, choosing between:
 
@@ -164,12 +137,12 @@ It is also possible to enable *hard delete* function to delete permanently a doc
 
 Only the following transitions are allowed in the publish workflow.
 
-| Source/Destination | PUBLIC | DRAFT | TRASH | DELETED |
-| ------------------ | ------ | ----- | ----- | ------- |
-| PUBLIC             | -      | OK    | OK    | -       |
-| DRAFT              | OK     | -     | OK    | -       |
-| TRASH              | -      | OK    | -     | OK      |
-| DELETED            | -      | -     | OK    | -       |
+| Source/Destination | PUBLIC  |  DRAFT | TRASH  | DELETED  |
+|--------------------|---------|--------|--------|----------|
+| PUBLIC             |    -    |   OK   |   OK   |   -      |
+| DRAFT              |   OK    |   -    |   OK   |   -      |
+| TRASH              |    -    |   OK   |   -    |   OK     |
+| DELETED            |    -    |   -    |   OK   |   -      |
 
 To transit the STATE of an item of a CRUD you need to POST it via the following endpoint:
 
@@ -215,7 +188,7 @@ When a new property is added to a collection, it is possible to specify the foll
 - Array of Numbers
 - Array of Objects
 
-For the Objects and array of Objects, it is <u>recommended</u> adding a JSON Schema describing the expected properties. This additional schema helps in disambiguating between valid or invalid requests payloads, especially when using update modifiers in the update commands within `PATCH` body.
+For the Objects and array of Objects, you could add a JSON Schema describing the expected properties.
 
 ### Collection document properties
 
@@ -696,7 +669,7 @@ The list of currently supported MongoDB aggregation operators is the following:
 Here you can find the official Mongo documentation about the [projection](https://www.mongodb.com/docs/manual/reference/method/db.collection.find/#std-label-method-find-projection) field into the find operator.
 
 :::note
-If you have problems with the special characters in the URL encoding, you can try the `json-query-params-encoding` header. More info at ([CRUD Headers](#crud-headers))
+If you have problems with the special characters in the URL encoding, you can try the `json-query-params-encoding` header. More info at ([CRUD Headers](./overview_and_usage.md#crud-headers))
 :::
 
 #### Combine all together
@@ -765,10 +738,10 @@ You can use more MongoDB filters in query **_q**. Here is the complete list:
 - `$elemMatch` and `$options`
 - `$text`
 
-Aggregate cannot be used. To use aggregate please see [Mia-Platform MongoDB Reader Service](https://docs.mia-platform.eu/docs/runtime_suite/mongodb-reader/configuration).
+Aggregate cannot be used. To use aggregate please see [Mia-Platform MongoDB Reader Service](../mongodb-reader/configuration.md).
 
 :::note
-If you have problems with the special characters in the URL encoding, you can try the `json-query-params-encoding` header. More info at ([CRUD Headers](#crud-headers)).
+If you have problems with the special characters in the URL encoding, you can try the `json-query-params-encoding` header. More info at ([CRUD Headers](./overview_and_usage.md#crud-headers)).
 :::
 
 #### Count
@@ -788,14 +761,6 @@ This will return:
 :::note
 Filters can be applied to the count. By default, only PUBLIC documents are counted.
 :::
-
-You can add the parameter `_useEstimate`, to be set to true, to execute the count request using the collection metadata instead of scanning the entire collection. This method drastically improves speed of the request, but it does not allow to use any filter (any other parameter included will be ignored).
-
-```shell
-curl -X GET https://your-url/v2/plates/count?_useEstimate=true -H  "accept: application/json" -H  "content-type: application/json" -H  "client-key: client-key"
-```
-
-The result will be the total number of documents in the collection, regardless of their `__STATE__`.
 
 #### Geospatial Queries
 
@@ -1061,294 +1026,6 @@ curl --location --request DELETE 'url.mia-platform.eu/v2/books/?category=sci-fi&
 The endpoint always responds `200 OK`, with an integer number in the body representing the count of deleted documents. 
 The response is 200 also when no documents are found, in that case the count will be 0.
 
-### Import
-
-You can import records into a collection from files adopting these formats:
-- `csv`
-- `json`
-- `ndjson`
-
-#### Import insert
-
-To import all the elements of a file you have to use the `POST` method. Mind that the method will fail if inside the file you have documents with an `_id` already present in your collection. To avoid this refer to the [upsert method](#import-upsert).
-
-The route to call is the following:
-
-`POST` `https://your-url/<CRUD collection endpoint>/import`
-
-Below you can see an example:
-
-```shell
-curl --data "file=@/path/to/file.json" -H 'Content-Type: multipart/form-data;boundary=XXXXX' -X POST http://url.mia-platform.eu/v2/books/import
-```
-
-Check out what the [import file](#import-file-examples) should look like
-
-When successful the endpoint responds `201 OK`, with the text "File uploaded successfully"
-
-#### Import upsert
-
-You can also import all the elements from a file using an `upsert` strategy, meaning that all the documents in the file having an already present `_id` field in your collection will be updated with the value of the document in the file.  
-In case a document in the file does not provide the `_id` field, then the import procedure will use the input document as filter to look for an existing document with the same data in the collection. If the document matches a collection record then, the metadata (e.g. `updatedAt` field) of existing document is updated. Otherwise a new document will be inserted in the collection```
-
-The route to call is the following:
-
-`PATCH` `https://your-url/<CRUD collection endpoint>/import`
-
-Below you can see an example:
-
-```shell
-curl --data "file=@/path/to/file.json" -H 'Content-Type: multipart/form-data;boundary=XXXXX' -X PATCH http://url.mia-platform.eu/v2/books/import
-```
-
-Check out what the [import file](#import-file-examples) should look like
-
-When successful the endpoint responds `200 OK`, with the text "File uploaded successfully"
-
-##### Import file examples
-
-```json title="books.json"
-[
-    {
-        "name": "The Fellowship Of The Ring",
-        "isbn": "54453",
-        "price": 13.99,
-        "author": "J.R.R. Tolkien"
-    },
-    {
-        "name": "Dune",
-        "isbn": "143535",
-        "price": 14.99,
-        "author": "Frank Herbert"
-    }
-]
-```
-
-```csv title="books.csv"
-name,isbn,price,author
-The Fellowship Of The Ring,54453,13.99,J.R.R. Tolkien
-Dune,143535,14.99,Frank Herbert
-```
-
-### Export
-
-To export all the elements of a collection you have to use the `GET /export` method exposed by each endpoint associated with a collection. It opens a data stream in different formats.
-
-#### Headers
-
-By default, the export format is `ndjson` but other formats can be specified through the `Accept` header. Supported formats (and relative headers) are the following ones:
-
-| Format | Accept Header value | Description |
-|--------|---------------------|-------------|
-| [`ndjson`](https://en.wikipedia.org/wiki/JSON_streaming#Newline-delimited_JSON) | `application/x-ndjson` | Data is exported in JSON, each record is processed individually and separated by a newline (`\n`) delimiter. |
-| `json` | `application/json` | Data is exported in JSON format. |
-| `csv` | `text/csv` | Data is exported in CSV format using comma as separator as default (the CSV includes the header with column names) |
-| `xlsx` | `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet` | Data is exported in XLS format (the file includes the header with column names) |
-| `xls` | `application/vnd.ms-excel` | Data is exported in XLS format (the file includes the header with column names) |
-
-
-#### Query parameters
-
-It accepts all the query parameters accepted by the `GET /` method plus the `_exportOpts` used for specify the separator for the `csv` format.
-
-```javascript
-  _exportOpts: {
-    type: 'object',
-    properties: {
-      delimiter: string
-    }
-  }
-```
-
-#### Example
-
-An example of a basic export request:
-
-```shell
-curl -X GET https://your-url/v2/plates/export \
--H  "content-type: application/json" \
--H  "client-key: client-key"
-```
-
-An example of an export request with accept header:
-
-```shell
-curl -X GET https://your-url/v2/plates/export \
--H  "accept: text/csv"  \
--H  "content-type: application/json" \
--H  "client-key: client-key"
-```
-
-
-### Get Schemas
-
-Besides managing collections schema on the database, CRUD Service allows also to retrieve the data model employed
-by each collection in a JSON schema format. The service exposes a general endpoint `/-/schemas` to download with a single
-request the schemas of all the collections managed by the service. Furthermore, it also exposes a new endpoint for
-each collection, `/<collection>/schema`, which enables extracting the JSON schema for that collection only.
-
-#### Retrieve all the collections schemas
-
-The `/-/schemas` endpoint returns the list of objects, each one composed by the collection name and its JSON Schema.
-
-:::note
-Please notice that `/-/` prefix has been added to `/schemas` endpoint. This is a prefix used by helper routes that do not
-belong to a specific collection to avoid possible conflicts.
-It is possible to can change this prefix by modifying the value of `HELPERS_PREFIX` environment variable.
-:::
-
-An example of request and response can be seen below. It is important to observe that this endpoint can produce and both
-as an `application/json` and as an `application/x-ndjson` mime-type, so that a client can process the schemas as a stream
-of objects.
-
-Command to retrieve the collections schema as a single array of JSON objects:
-
-```shell
-curl -X GET https://your-url/v2/-/schemas \
--H  "accept: application/json"  \
--H  "content-type: application/json" \
--H  "client-key: client-key"
-```
-
-Command to retrieve the collections schema as a stream of JSON object separated by newlines:
-
-```shell
-curl -X GET https://your-url/v2/-/schemas \
--H  "accept: application/json"  \
--H  "content-type: application/x-ndjson" \
--H  "client-key: client-key"
-```
-
-Example of output generated by the endpoint:
-
-```json
-[
-  {
-    "name": "books",
-    "schema": {
-      "type": "object",
-      "properties": {
-        "__STATE__": {
-          "description": "The state of the document",
-          "type": "string"
-        },
-        "_id": {
-          "description": "Hexadecimal identifier of the document in the collection",
-          "example": "000000000000000000000000",
-          "pattern": "^[a-fA-F\\\\d]{24}$",
-          "type": "string"
-        },
-        "title": {
-          "description": "The book name",
-          "type": "string"
-        },
-        "author": {
-          "description": "The author of the book",
-          "type": "string"
-        },
-        "metadata": {
-          "additionalProperties": true,
-          "nullable": true,
-          "type": "object"
-        }
-      }
-    }
-  },
-  {
-    "name": "projects",
-    "schema": {
-      "type": "object",
-      "properties": {
-        "__STATE__": {
-          "description": "__STATE__",
-          "type": "string"
-        },
-        "_id": {
-          "description": "_id",
-          "example": "000000000000000000000000",
-          "pattern": "^[a-fA-F\\\\d]{24}$",
-          "type": "string"
-        },
-        "createdAt": {
-          "description": "createdAt",
-          "example": "1997-04-24T07:00:00.000Z",
-          "nullable": false,
-          "type": "string"
-        },
-        "creatorId": {
-          "description": "creatorId",
-          "type": "string"
-        },
-        "updatedAt": {
-          "description": "updatedAt",
-          "example": "1997-04-24T07:00:00.000Z",
-          "nullable": false,
-          "type": "string"
-        },
-        "updaterId": {
-          "description": "updaterId",
-          "type": "string"
-        },
-        "name": {
-          "description": "The name of the project",
-          "type": "string"
-        },
-        "description": {
-          "description": "The gist of the project goal",
-          "type": "string"
-        }
-      }
-    }
-  }
-]
-```
-
-#### Retrieve the schema of a single collection
-
-The `/<collection>/schema` endpoint will return JSON schema defining the data model of the requested collection.
-
-Command to retrieve the specific collection schema a JSON object:
-
-```shell
-curl -X GET https://your-url/v2/books/schema \
--H  "accept: application/json"  \
--H  "content-type: application/json" \
--H  "client-key: client-key"
-```
-
-Example of output for a specific collection schema
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "__STATE__": {
-      "description": "The state of the document",
-      "type": "string"
-    },
-    "_id": {
-      "description": "Hexadecimal identifier of the document in the collection",
-      "example": "000000000000000000000000",
-      "pattern": "^[a-fA-F\\\\d]{24}$",
-      "type": "string"
-    },
-    "title": {
-      "description": "The book name",
-      "type": "string"
-    },
-    "author": {
-      "description": "The author of the book",
-      "type": "string"
-    },
-    "metadata": {
-      "additionalProperties": true,
-      "nullable": true,
-      "type": "object"
-    }
-  }
-}
-```
-
 ### RawObject and Array_RawObject with schemas
 
 Nested properties of a field of type `RawObject` and `Array_RawObject` can be used in REST APIs with object notation or dot notation.
@@ -1471,7 +1148,7 @@ Below is a list of return codes typical of an API request:
 #### 2xx (Success category)
 
 | Code    | Message    | Description                                                                                                                                                        |
-| ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+|---------|------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **200** | Ok         | The standard HTTP response representing success for GET, PUT or POST.                                                                                              |
 | **201** | Created    | This status code should be returned whenever the new instance is created. E.g on creating a new instance, using POST method, should always return 201 status code. |
 | **204** | No Content | The request is successfully processed, but has not returned any content.                                                                                           |
@@ -1479,7 +1156,7 @@ Below is a list of return codes typical of an API request:
 #### 3xx (Redirection Category)
 
 | Code    | Message      | Description                                                                                                                  |
-| ------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------- |
+|---------|--------------|------------------------------------------------------------------------------------------------------------------------------|
 | **304** | Not Modified | Indicates that the client has the response already in its cache, and hence there is no need to transfer the same data again. |
 
 #### 4xx (Client Error Category)
@@ -1487,7 +1164,7 @@ Below is a list of return codes typical of an API request:
 These status codes represent that the client has raised a faulty request.
 
 | Code    | Message      | Description                                                                                                                                                                                                                                 |
-| ------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|---------|--------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **400** | Bad Request  | Indicates that the request by the client was not processed, as the server could not understand what the client is asking for.                                                                                                               |
 | **401** | Unauthorized | Indicates that the client is not allowed to access documents, and should re-request with the required credentials.                                                                                                                          |
 | **403** | Forbidden    | Indicates that the request is valid and the client is authenticated, but the client is not allowed to access the page or resource for any reason. E.g sometimes the authorized client is not allowed to access the directory on the server. |
@@ -1497,6 +1174,6 @@ These status codes represent that the client has raised a faulty request.
 #### 5xx (Server Error Category)
 
 | Code    | Message               | Description                                                                                                                          |
-| ------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+|---------|-----------------------|--------------------------------------------------------------------------------------------------------------------------------------|
 | **500** | Internal Server Error | Indicates that the request is valid, but the server is totally confused and the server is asked to serve some unexpected condition.  |
 | **503** | Service Unavailable   | Indicates that the server is down or unavailable to receive and process the request. Mostly if the server is undergoing maintenance. |

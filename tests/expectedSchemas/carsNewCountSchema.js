@@ -19,7 +19,7 @@
 module.exports = {
   'summary': 'Returns the number of items in the cars collection.',
   'tags': [
-    'cars endpoint',
+    'Cars Endpoint',
   ],
   'querystring': {
     'operationId': 'cars__MIA__count__MIA__querystring',
@@ -27,46 +27,10 @@ module.exports = {
     'properties': {
       '_id': {
         'type': 'string',
-        'description': 'Hexadecimal identifier of the document in the collection',
         'pattern': '^[a-fA-F\\d]{24}$',
-        'example': '000000000000000000000000',
-      },
-      'creatorId': {
-        'type': 'string',
-        'description': 'User id that has created this object',
-      },
-      'createdAt': {
-        'type': 'string',
-        'example': '1997-04-24T07:00:00.000Z',
-        'anyOf': [
-          {
-            'format': 'date-time',
-          },
-          {
-            'format': 'date',
-          },
-          {
-            'format': 'time',
-          },
-        ],
-      },
-      'updaterId': {
-        'type': 'string',
-        'description': 'User id that has requested the last change successfully',
-      },
-      'updatedAt': {
-        'type': 'string',
-        'example': '1997-04-24T07:00:00.000Z',
-        'anyOf': [
-          {
-            'format': 'date-time',
-          },
-          {
-            'format': 'date',
-          },
-          {
-            'format': 'time',
-          },
+        'description': 'Hexadecimal identifier of the document in the collection',
+        'examples': [
+          '000000000000000000000000',
         ],
       },
       'name': {
@@ -76,6 +40,30 @@ module.exports = {
       'price': {
         'type': 'number',
         'description': "The car's price",
+      },
+      'updaterId': {
+        'type': 'string',
+        'description': 'User id that has requested the last change successfully',
+      },
+      'updatedAt': {
+        'type': 'string',
+        'description': 'Date of the request that has performed the last change',
+        'examples': [
+          '2020-09-16T12:00:00.000Z',
+        ],
+        'format': 'date-time',
+      },
+      'creatorId': {
+        'type': 'string',
+        'description': 'User id that has created this object',
+      },
+      'createdAt': {
+        'type': 'string',
+        'description': 'Date of the request that has performed the object creation',
+        'examples': [
+          '2020-09-16T12:00:00.000Z',
+        ],
+        'format': 'date-time',
       },
       '_q': {
         'type': 'string',
@@ -90,15 +78,6 @@ module.exports = {
       '_rawp': {
         'type': 'string',
         'description': 'Additional raw stringified projection for MongoDB',
-      },
-      '_useEstimate': {
-        'type': 'boolean',
-        'enum': [
-          true,
-          false,
-        ],
-        'description': 'If "true", returns the count of all documents in the collection based on the metadata of the collection. It works only there are no other query parameters.',
-        'default': false,
       },
     },
     'additionalProperties': false,

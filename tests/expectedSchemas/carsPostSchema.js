@@ -19,7 +19,7 @@
 module.exports = {
   'summary': 'Add a new item to the cars collection.',
   'tags': [
-    'cars endpoint',
+    'Cars Endpoint',
   ],
   'body': {
     'operationId': 'cars__MIA__postItem__MIA__body',
@@ -70,9 +70,11 @@ module.exports = {
       'properties': {
         '_id': {
           'type': 'string',
-          'description': 'Hexadecimal identifier of the document in the collection',
           'pattern': '^[a-fA-F\\d]{24}$',
-          'example': '000000000000000000000000',
+          'description': 'Hexadecimal identifier of the document in the collection',
+          'examples': [
+            '000000000000000000000000',
+          ],
         },
       },
     },

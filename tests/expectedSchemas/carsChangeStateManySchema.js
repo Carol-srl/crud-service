@@ -19,7 +19,7 @@
 module.exports = {
   'summary': 'Change state of multiple items of cars.',
   'tags': [
-    'cars endpoint',
+    'Cars Endpoint',
   ],
   'body': {
     'operationId': 'cars__MIA__changeStateMany__MIA__body',
@@ -32,27 +32,11 @@ module.exports = {
           'properties': {
             '_id': {
               'type': 'string',
-              'description': 'Hexadecimal identifier of the document in the collection',
               'pattern': '^[a-fA-F\\d]{24}$',
-              'example': '000000000000000000000000',
-            },
-            'creatorId': {
-              'type': 'string',
-              'description': 'User id that has created this object',
-            },
-            'createdAt': {
-              'type': 'string',
-              'example': '1997-04-24T07:00:00.000Z',
-              'pattern': '^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2}))?$',
-            },
-            'updaterId': {
-              'type': 'string',
-              'description': 'User id that has requested the last change successfully',
-            },
-            'updatedAt': {
-              'type': 'string',
-              'example': '1997-04-24T07:00:00.000Z',
-              'pattern': '^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2}))?$',
+              'description': 'Hexadecimal identifier of the document in the collection',
+              'examples': [
+                '000000000000000000000000',
+              ],
             },
             'name': {
               'type': 'string',
@@ -65,6 +49,30 @@ module.exports = {
             'additionalInfo': {
               'type': 'object',
               'additionalProperties': true,
+            },
+            'updaterId': {
+              'type': 'string',
+              'description': 'User id that has requested the last change successfully',
+            },
+            'updatedAt': {
+              'type': 'string',
+              'pattern': '^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2}))?$',
+              'description': 'Date of the request that has performed the last change',
+              'examples': [
+                '2020-09-16T12:00:00.000Z',
+              ],
+            },
+            'creatorId': {
+              'type': 'string',
+              'description': 'User id that has created this object',
+            },
+            'createdAt': {
+              'type': 'string',
+              'pattern': '^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2}))?$',
+              'description': 'Date of the request that has performed the object creation',
+              'examples': [
+                '2020-09-16T12:00:00.000Z',
+              ],
             },
           },
         },

@@ -184,7 +184,7 @@ tap.test('HTTP POST /bulk', async t => {
       },
     })
 
-    t.strictSame(response.statusCode, 409)
+    t.strictSame(response.statusCode, 422)
     t.ok(/application\/json/.test(response.headers['content-type']))
 
     t.test('on database', async t => {
@@ -589,8 +589,7 @@ tap.test('HTTP POST /bulk', async t => {
       t.strictSame(body, {
         statusCode: 400,
         error: 'Bad Request',
-        message: 'body/0/publishDate must match pattern "^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2}))?$"',
-        code: 'FST_ERR_VALIDATION',
+        message: 'body must match pattern "^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2}))?$"',
       })
       t.end()
     })
@@ -765,31 +764,11 @@ tap.test('MP4-462: default state ignored on /bulk when at least one document has
         environments: [],
       }],
     },
-    riders: {
-      docs: [{
-        name: 'Name 1',
-        surname: 'Surname 1',
-        __STATE__: STATES.PUBLIC,
-      }, {
-        name: 'Name 2',
-        surname: 'Surname 2',
-      }],
-    },
-    orders: {
-      docs: [{
-        items: ['555555555555555555555555'],
-        id_rider: '111111111111111111111111',
-        __STATE__: STATES.PUBLIC,
-      }, {
-        items: ['777777777777777777777777'],
-        id_rider: '111111111111111111111111',
-      }],
-    },
   }
 
   const collections = readdirSync(path.join(__dirname, 'collectionDefinitions'))
 
-  const collectionsToSkip = ['felines.js', 'canines.js', 'store.js', 'store-open.js', 'orders-details.js', 'items.js', 'orders-items.js']
+  const collectionsToSkip = ['felines.js', 'canines.js', 'store.js', 'store-open.js']
 
   const filteredCollections = collections.filter(collection => !collectionsToSkip.includes(collection))
 

@@ -19,8 +19,7 @@
 module.exports = {
   'summary': 'Add a new item to the books collection.',
   'tags': [
-    'books endpoint',
-    'Library',
+    'Books Endpoint',
   ],
   'body': {
     'operationId': 'books__MIA__postItem__MIA__body',
@@ -32,8 +31,8 @@ module.exports = {
     'properties': {
       'name': {
         'type': 'string',
-        'description': 'The name of the book',
         'nullable': true,
+        'description': 'The name of the book',
       },
       'isbn': {
         'type': 'string',
@@ -49,30 +48,24 @@ module.exports = {
       },
       'authorAddressId': {
         'type': 'string',
-        'description': 'The address of the author',
         'pattern': '^[a-fA-F\\d]{24}$',
-        'example': '000000000000000000000000',
+        'description': 'The address of the author',
+        'examples': [
+          '000000000000000000000000',
+        ],
       },
       'isPromoted': {
         'type': 'boolean',
         'description': "If it's in promotion",
       },
       'publishDate': {
-        'example': '1997-04-24T07:00:00.000Z',
         'type': 'string',
-        'nullable': true,
-        'anyOf': [
-          {
-            'format': 'date-time',
-          },
-          {
-            'format': 'date',
-          },
-          {
-            'format': 'time',
-          },
-        ],
         'description': 'The date it was published',
+        'examples': [
+          '2020-09-16T12:00:00.000Z',
+        ],
+        'nullable': true,
+        'format': 'date-time',
       },
       'position': {
         'type': 'array',
@@ -84,64 +77,18 @@ module.exports = {
         'description': 'The position of the book',
       },
       'tags': {
-        'type': [
-          'array',
-          'string',
-        ],
-        'anyOf': [
-          {
-            'type': 'array',
-            'items': {
-              'type': 'string',
-            },
-          },
-          {
-            'type': 'string',
-          },
-        ],
+        'type': 'array',
+        'items': {
+          'type': 'string',
+        },
         'description': 'Tags',
       },
       'tagIds': {
-        'type': [
-          'array',
-          'number',
-        ],
-        'anyOf': [
-          {
-            'type': 'array',
-            'items': {
-              'type': 'number',
-            },
-          },
-          {
-            'type': 'number',
-          },
-        ],
+        'type': 'array',
+        'items': {
+          'type': 'number',
+        },
         'description': 'Tag identification numbers',
-      },
-      'tagObjectIds': {
-        'type': [
-          'array',
-          'string',
-        ],
-        'anyOf': [
-          {
-            'type': 'array',
-            'items': {
-              'type': 'string',
-              'description': 'Hexadecimal identifier of the document in the collection',
-              'pattern': '^[a-fA-F\\d]{24}$',
-              'example': '000000000000000000000000',
-            },
-          },
-          {
-            'type': 'string',
-            'description': 'Hexadecimal identifier of the document in the collection',
-            'pattern': '^[a-fA-F\\d]{24}$',
-            'example': '000000000000000000000000',
-          },
-        ],
-        'description': 'Tag object ids',
       },
       'additionalInfo': {
         'type': 'object',
@@ -181,9 +128,6 @@ module.exports = {
                 },
                 'anotherNumber': {
                   'type': 'number',
-                },
-                'integerNum': {
-                  'type': 'integer',
                 },
                 'anotherObject': {
                   'type': 'object',
@@ -226,151 +170,59 @@ module.exports = {
         ],
       },
       'attachments': {
-        'type': [
-          'array',
-          'object',
-          'null',
-        ],
-        'anyOf': [
-          {
-            'type': 'array',
-            'items': {
+        'type': 'array',
+        'items': {
+          'type': 'object',
+          'additionalProperties': false,
+          'properties': {
+            'name': {
+              'type': 'string',
+            },
+            'detail': {
               'type': 'object',
-              'additionalProperties': false,
               'properties': {
-                'name': {
-                  'type': 'string',
-                },
-                'detail': {
-                  'type': 'object',
-                  'properties': {
-                    'size': {
-                      'type': 'number',
-                    },
-                  },
-                },
-                'nestedArr': {
-                  'type': 'array',
-                  'items': {
-                    'type': 'number',
-                  },
-                },
-                'additionalInfo': {
-                  'type': 'object',
-                  'additionalProperties': true,
-                },
-                'other': {
-                  'type': 'string',
-                },
                 'size': {
                   'type': 'number',
                 },
-                'stuff': {
-                  'type': 'number',
-                },
-                'more': {
-                  'type': 'array',
-                  'items': {
-                    'type': 'string',
-                  },
-                },
-              },
-              'required': [
-                'name',
-              ],
-              'nullable': true,
-            },
-            'nullable': true,
-          },
-          {
-            'type': 'object',
-            'additionalProperties': false,
-            'properties': {
-              'name': {
-                'type': 'string',
-              },
-              'detail': {
-                'type': 'object',
-                'properties': {
-                  'size': {
-                    'type': 'number',
-                  },
-                },
-              },
-              'nestedArr': {
-                'type': 'array',
-                'items': {
-                  'type': 'number',
-                },
-              },
-              'additionalInfo': {
-                'type': 'object',
-                'additionalProperties': true,
-              },
-              'other': {
-                'type': 'string',
-              },
-              'size': {
-                'type': 'number',
-              },
-              'stuff': {
-                'type': 'number',
-              },
-              'more': {
-                'type': 'array',
-                'items': {
-                  'type': 'string',
-                },
               },
             },
-            'required': [
-              'name',
-            ],
-            'nullable': true,
-          },
-        ],
-        'nullable': true,
-      },
-      'editionsDates': {
-        'type': [
-          'array',
-          'object',
-          'null',
-        ],
-        'anyOf': [
-          {
-            'type': 'array',
-            'items': {
+            'neastedArr': {
+              'type': 'array',
+              'items': {
+                'type': 'number',
+              },
+            },
+            'additionalInfo': {
               'type': 'object',
               'additionalProperties': true,
-              'properties': {
-                'edition': {
-                  'type': 'number',
-                },
-                'date': {
-                  'type': 'string',
-                  'format': 'date-time',
-                },
-              },
-              'nullable': true,
             },
-            'nullable': true,
-          },
-          {
-            'type': 'object',
-            'additionalProperties': true,
-            'properties': {
-              'edition': {
-                'type': 'number',
-              },
-              'date': {
+            'other': {
+              'type': 'string',
+            },
+            'size': {
+              'type': 'number',
+            },
+            'stuff': {
+              'type': 'number',
+            },
+            'more': {
+              'type': 'array',
+              'items': {
                 'type': 'string',
-                'format': 'date-time',
               },
             },
-            'nullable': true,
           },
-        ],
+          'required': [
+            'name',
+          ],
+        },
+      },
+      'editionsDates': {
+        'type': 'array',
+        'items': {
+          'type': 'object',
+          'additionalProperties': true,
+        },
         'nullable': true,
       },
       '__STATE__': {
@@ -394,9 +246,11 @@ module.exports = {
       'properties': {
         '_id': {
           'type': 'string',
-          'description': 'Hexadecimal identifier of the document in the collection',
           'pattern': '^[a-fA-F\\d]{24}$',
-          'example': '000000000000000000000000',
+          'description': 'Hexadecimal identifier of the document in the collection',
+          'examples': [
+            '000000000000000000000000',
+          ],
         },
       },
     },

@@ -20,9 +20,6 @@ module.exports = {
   name: 'books',
   endpointBasePath: '/books-endpoint',
   defaultState: 'DRAFT',
-  defaultSorting: {
-    _id: 1,
-  },
   fields: [
     {
       name: '_id',
@@ -128,18 +125,6 @@ module.exports = {
       required: false,
     },
     {
-      name: 'tagObjectIds',
-      type: 'Array',
-      items: {
-        type: 'string',
-        __mia_configuration: {
-          type: 'ObjectId',
-        },
-      },
-      description: 'Tag object ids',
-      required: false,
-    },
-    {
       name: 'additionalInfo',
       type: 'RawObject',
       required: false,
@@ -171,7 +156,6 @@ module.exports = {
               properties: {
                 arrayItemObjectChildNumber: { type: 'number' },
                 anotherNumber: { type: 'number' },
-                integerNum: { type: 'integer' },
                 anotherObject: { type: 'object', nullable: true },
               },
               additionalProperties: true,
@@ -213,7 +197,7 @@ module.exports = {
                 size: { type: 'number' },
               },
             },
-            nestedArr: {
+            neastedArr: {
               type: 'array',
               items: { type: 'number' },
             },
@@ -227,7 +211,6 @@ module.exports = {
           additionalProperties: false,
         },
       },
-      nullable: true,
       required: false,
     },
     {
@@ -235,13 +218,6 @@ module.exports = {
       type: 'Array',
       items: {
         type: 'RawObject',
-        schema: {
-          properties: {
-            edition: { type: 'number' },
-            date: { type: 'string', format: 'date-time' },
-          },
-          additionalProperties: true,
-        },
       },
       required: false,
       nullable: true,
@@ -294,5 +270,4 @@ module.exports = {
       partialFilterExpression: '{"isPromoted": { "$eq": true } }',
     },
   ],
-  tags: ['Library'],
 }

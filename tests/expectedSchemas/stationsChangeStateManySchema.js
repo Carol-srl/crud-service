@@ -19,7 +19,7 @@
 module.exports = {
   'summary': 'Change state of multiple items of stations.',
   'tags': [
-    'stations endpoint',
+    'Stations Endpoint',
   ],
   'body': {
     'operationId': 'stations__MIA__changeStateMany__MIA__body',
@@ -34,16 +34,9 @@ module.exports = {
               'type': 'string',
               'pattern': '^(?!\\s*$).+',
               'description': 'String identifier of the document in the collection',
-              'example': '00000000-0000-4000-0000-000000000000',
-            },
-            'creatorId': {
-              'type': 'string',
-              'description': 'User id that has created this object',
-            },
-            'createdAt': {
-              'type': 'string',
-              'example': '1997-04-24T07:00:00.000Z',
-              'pattern': '^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2}))?$',
+              'examples': [
+                '00000000-0000-4000-0000-000000000000',
+              ],
             },
             'updaterId': {
               'type': 'string',
@@ -51,8 +44,23 @@ module.exports = {
             },
             'updatedAt': {
               'type': 'string',
-              'example': '1997-04-24T07:00:00.000Z',
               'pattern': '^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2}))?$',
+              'description': 'Date of the request that has performed the last change',
+              'examples': [
+                '2020-09-16T12:00:00.000Z',
+              ],
+            },
+            'creatorId': {
+              'type': 'string',
+              'description': 'User id that has created this object',
+            },
+            'createdAt': {
+              'type': 'string',
+              'pattern': '^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2}))?$',
+              'description': 'Date of the request that has performed the object creation',
+              'examples': [
+                '2020-09-16T12:00:00.000Z',
+              ],
             },
             'Cap': {
               'type': 'number',
@@ -68,13 +76,6 @@ module.exports = {
             },
             'country': {
               'type': 'string',
-            },
-            'nonNullableDate': {
-              'type': 'string',
-              'example': '1997-04-24T07:00:00.000Z',
-              'pattern': '^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2}))?$',
-              'description': '"date-time" according with https://tools.ietf.org/html/rfc3339#section-5.6',
-              'nullable': false,
             },
           },
         },

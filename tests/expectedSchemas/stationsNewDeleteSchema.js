@@ -19,7 +19,7 @@
 module.exports = {
   'summary': 'Delete an item with specific ID from the stations collection.',
   'tags': [
-    'stations endpoint',
+    'Stations Endpoint',
   ],
   'params': {
     'type': 'object',
@@ -35,102 +35,44 @@ module.exports = {
     'operationId': 'stations__MIA__deleteItem__MIA__querystring',
     'type': 'object',
     'properties': {
-      'creatorId': {
-        'type': 'string',
-        'description': 'User id that has created this object',
-      },
-      'createdAt': {
-        'type': 'string',
-        'example': '1997-04-24T07:00:00.000Z',
-        'anyOf': [
-          {
-            'format': 'date-time',
-          },
-          {
-            'format': 'date',
-          },
-          {
-            'format': 'time',
-          },
-        ],
-      },
       'updaterId': {
         'type': 'string',
         'description': 'User id that has requested the last change successfully',
       },
       'updatedAt': {
         'type': 'string',
-        'example': '1997-04-24T07:00:00.000Z',
-        'anyOf': [
-          {
-            'format': 'date-time',
-          },
-          {
-            'format': 'date',
-          },
-          {
-            'format': 'time',
-          },
+        'description': 'Date of the request that has performed the last change',
+        'examples': [
+          '2020-09-16T12:00:00.000Z',
         ],
+        'format': 'date-time',
+      },
+      'creatorId': {
+        'type': 'string',
+        'description': 'User id that has created this object',
+      },
+      'createdAt': {
+        'type': 'string',
+        'description': 'Date of the request that has performed the object creation',
+        'examples': [
+          '2020-09-16T12:00:00.000Z',
+        ],
+        'format': 'date-time',
       },
       'Cap': {
         'type': 'number',
-        'nullable': true,
       },
       'CodiceMIR': {
         'type': 'string',
-        'nullable': true,
       },
       'Comune': {
         'type': 'string',
-        'nullable': true,
-      },
-      'Direttrici': {
-        'type': [
-          'array',
-          'string',
-          'null',
-        ],
-        'anyOf': [
-          {
-            'type': 'array',
-            'items': {
-              'type': 'string',
-              'nullable': true,
-            },
-            'nullable': true,
-          },
-          {
-            'type': 'string',
-            'nullable': true,
-          },
-        ],
-        'nullable': true,
       },
       'Indirizzo': {
         'type': 'string',
-        'nullable': true,
       },
       'country': {
         'type': 'string',
-        'nullable': true,
-      },
-      'nonNullableDate': {
-        'example': '1997-04-24T07:00:00.000Z',
-        'type': 'string',
-        'nullable': false,
-        'anyOf': [
-          {
-            'format': 'date-time',
-          },
-          {
-            'format': 'date',
-          },
-          {
-            'format': 'time',
-          },
-        ],
-        'description': '"date-time" according with https://tools.ietf.org/html/rfc3339#section-5.6',
       },
       '_q': {
         'type': 'string',

@@ -19,7 +19,7 @@
 module.exports = {
   'summary': 'Returns the item with specific ID from the cars collection.',
   'tags': [
-    'cars endpoint',
+    'Cars Endpoint',
   ],
   'params': {
     'type': 'object',
@@ -35,24 +35,6 @@ module.exports = {
     'operationId': 'cars__MIA__getItem__MIA__querystring',
     'type': 'object',
     'properties': {
-      'creatorId': {
-        'type': 'string',
-        'description': 'User id that has created this object',
-      },
-      'createdAt': {
-        'type': 'string',
-        'example': '1997-04-24T07:00:00.000Z',
-        'pattern': '^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2}))?$',
-      },
-      'updaterId': {
-        'type': 'string',
-        'description': 'User id that has requested the last change successfully',
-      },
-      'updatedAt': {
-        'type': 'string',
-        'example': '1997-04-24T07:00:00.000Z',
-        'pattern': '^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2}))?$',
-      },
       'name': {
         'type': 'string',
         'description': "The car's name",
@@ -61,6 +43,30 @@ module.exports = {
         'type': 'number',
         'description': "The car's price",
       },
+      'updaterId': {
+        'type': 'string',
+        'description': 'User id that has requested the last change successfully',
+      },
+      'updatedAt': {
+        'type': 'string',
+        'pattern': '^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2}))?$',
+        'description': 'Date of the request that has performed the last change',
+        'examples': [
+          '2020-09-16T12:00:00.000Z',
+        ],
+      },
+      'creatorId': {
+        'type': 'string',
+        'description': 'User id that has created this object',
+      },
+      'createdAt': {
+        'type': 'string',
+        'pattern': '^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2}))?$',
+        'description': 'Date of the request that has performed the object creation',
+        'examples': [
+          '2020-09-16T12:00:00.000Z',
+        ],
+      },
       '_q': {
         'type': 'string',
         'description': 'Additional query part to forward to MongoDB',
@@ -68,7 +74,9 @@ module.exports = {
       '_p': {
         'type': 'string',
         'description': 'Return only the properties specified in a comma separated list',
-        'example': 'field1,field2,field3.nestedField',
+        'examples': [
+          'field1,field2,field3.nestedField',
+        ],
       },
       '_st': {
         'type': 'string',
@@ -93,9 +101,11 @@ module.exports = {
       'properties': {
         '_id': {
           'type': 'string',
-          'description': 'Hexadecimal identifier of the document in the collection',
           'pattern': '^[a-fA-F\\d]{24}$',
-          'example': '000000000000000000000000',
+          'description': 'Hexadecimal identifier of the document in the collection',
+          'examples': [
+            '000000000000000000000000',
+          ],
         },
         'name': {
           'type': 'string',
@@ -122,8 +132,10 @@ module.exports = {
         },
         'updatedAt': {
           'type': 'string',
-          'example': '1997-04-24T07:00:00.000Z',
-          'nullable': false,
+          'format': 'date-time',
+          'examples': [
+            '2020-09-16T12:00:00.000Z',
+          ],
           'description': 'Date of the request that has performed the last change',
         },
         'creatorId': {
@@ -132,8 +144,10 @@ module.exports = {
         },
         'createdAt': {
           'type': 'string',
-          'example': '1997-04-24T07:00:00.000Z',
-          'nullable': false,
+          'format': 'date-time',
+          'examples': [
+            '2020-09-16T12:00:00.000Z',
+          ],
           'description': 'Date of the request that has performed the object creation',
         },
         '__STATE__': {
@@ -141,7 +155,6 @@ module.exports = {
           'description': 'The state of the document',
         },
       },
-      'additionalProperties': true,
     },
   },
 }

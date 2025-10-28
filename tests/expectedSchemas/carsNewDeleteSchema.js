@@ -19,7 +19,7 @@
 module.exports = {
   'summary': 'Delete an item with specific ID from the cars collection.',
   'tags': [
-    'cars endpoint',
+    'Cars Endpoint',
   ],
   'params': {
     'type': 'object',
@@ -35,44 +35,6 @@ module.exports = {
     'operationId': 'cars__MIA__deleteItem__MIA__querystring',
     'type': 'object',
     'properties': {
-      'creatorId': {
-        'type': 'string',
-        'description': 'User id that has created this object',
-      },
-      'createdAt': {
-        'type': 'string',
-        'example': '1997-04-24T07:00:00.000Z',
-        'anyOf': [
-          {
-            'format': 'date-time',
-          },
-          {
-            'format': 'date',
-          },
-          {
-            'format': 'time',
-          },
-        ],
-      },
-      'updaterId': {
-        'type': 'string',
-        'description': 'User id that has requested the last change successfully',
-      },
-      'updatedAt': {
-        'type': 'string',
-        'example': '1997-04-24T07:00:00.000Z',
-        'anyOf': [
-          {
-            'format': 'date-time',
-          },
-          {
-            'format': 'date',
-          },
-          {
-            'format': 'time',
-          },
-        ],
-      },
       'name': {
         'type': 'string',
         'description': "The car's name",
@@ -80,6 +42,30 @@ module.exports = {
       'price': {
         'type': 'number',
         'description': "The car's price",
+      },
+      'updaterId': {
+        'type': 'string',
+        'description': 'User id that has requested the last change successfully',
+      },
+      'updatedAt': {
+        'type': 'string',
+        'description': 'Date of the request that has performed the last change',
+        'examples': [
+          '2020-09-16T12:00:00.000Z',
+        ],
+        'format': 'date-time',
+      },
+      'creatorId': {
+        'type': 'string',
+        'description': 'User id that has created this object',
+      },
+      'createdAt': {
+        'type': 'string',
+        'description': 'Date of the request that has performed the object creation',
+        'examples': [
+          '2020-09-16T12:00:00.000Z',
+        ],
+        'format': 'date-time',
       },
       '_q': {
         'type': 'string',

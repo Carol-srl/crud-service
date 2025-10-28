@@ -17,7 +17,7 @@
 'use strict'
 
 const tap = require('tap')
-const { omit: lomit } = require('lodash')
+const { omit } = require('ramda')
 const { STANDARD_FIELDS } = require('../lib/CrudService')
 
 const { STATES, __STATE__, ARRAY_MERGE_ELEMENT_OPERATOR } = require('../lib/consts')
@@ -156,7 +156,7 @@ tap.test('HTTP PATCH /', async t => {
         attachments: [
           {
             name: 'renamed',
-            nestedArr: [1, 2, 3],
+            neastedArr: [1, 2, 3],
             detail: { size: 9 },
           },
           {
@@ -168,7 +168,7 @@ tap.test('HTTP PATCH /', async t => {
         attachments: [
           {
             name: 'renamed',
-            nestedArr: [1, 2, 66],
+            neastedArr: [1, 2, 66],
           }],
       }],
     },
@@ -179,6 +179,7 @@ tap.test('HTTP PATCH /', async t => {
       command: { $unset: { authorAddressId: 'true' } },
       expectedUpdatedDocuments: fixtures.filter(doc => doc._id.toString() === ID)
         .map(doc => {
+          // eslint-disable-next-line no-unused-vars
           const { authorAddressId, ...rest } = doc
           return rest
         }),
@@ -217,7 +218,7 @@ tap.test('HTTP PATCH /', async t => {
         .map(doc => ({
           ...doc,
           metadata: { ...doc.metadata, somethingArrayObject: [] },
-          attachments: [{ name: 'note', nestedArr: [1, 2, 3], detail: { size: 9 } }],
+          attachments: [{ name: 'note', neastedArr: [1, 2, 3], detail: { size: 9 } }],
         })),
     },
   ]
@@ -263,8 +264,8 @@ tap.test('HTTP PATCH /', async t => {
         ).toArray()
 
         for (let i = 0; i < updatedDocs.length; i++) {
-          const actual = lomit(updatedDocs[i], ['_id', 'updaterId', 'updatedAt'])
-          const expected = lomit(expectedUpdatedDocuments[i], ['_id', 'updaterId', 'updatedAt'])
+          const actual = omit(['_id', 'updaterId', 'updatedAt'], updatedDocs[i])
+          const expected = omit(['_id', 'updaterId', 'updatedAt'], expectedUpdatedDocuments[i])
           t.strictSame(actual, expected)
         }
 
@@ -308,8 +309,8 @@ tap.test('HTTP PATCH /', async t => {
 
       t.ok(updatedDoc.publishDate > expectedUpdatedDocument.publishDate)
 
-      const actual = lomit(updatedDoc, ['_id', 'updaterId', 'updatedAt', 'publishDate'])
-      const expected = lomit(expectedUpdatedDocument, ['_id', 'updaterId', 'updatedAt', 'publishDate'])
+      const actual = omit(['_id', 'updaterId', 'updatedAt', 'publishDate'], updatedDoc)
+      const expected = omit(['_id', 'updaterId', 'updatedAt', 'publishDate'], expectedUpdatedDocument)
       t.strictSame(actual, expected)
       t.end()
     })
@@ -331,7 +332,7 @@ tap.test('HTTP PATCH /', async t => {
       },
       attachments: [{
         name: 'note-a',
-        nestedArr: [111],
+        neastedArr: [111],
       }],
     }
     const DOC_TEST2 = {
@@ -347,7 +348,7 @@ tap.test('HTTP PATCH /', async t => {
       },
       attachments: [{
         name: 'note-b',
-        nestedArr: [222, 333],
+        neastedArr: [222, 333],
       }],
     }
     const DOC_TEST3 = {
@@ -363,7 +364,7 @@ tap.test('HTTP PATCH /', async t => {
       },
       attachments: [{
         name: 'note-c',
-        nestedArr: [444],
+        neastedArr: [444],
       }],
     }
 
@@ -505,7 +506,7 @@ tap.test('HTTP PATCH /', async t => {
       t.test('ok with casting of array in array', async t => {
         const UPDATE_COMMAND = {
           $push: {
-            'attachments.0.nestedArr': VALUE_AS_STRING,
+            'attachments.0.neastedArr': VALUE_AS_STRING,
           },
         }
 
@@ -531,7 +532,7 @@ tap.test('HTTP PATCH /', async t => {
           const originalDoc = EXPECTED_DOCUMENTS_TO_UPDATE.find(doc => doc._id.toString() === itemOnDb._id.toString())
           t.strictSame(itemOnDb.attachments, [{
             ...originalDoc.attachments[0],
-            nestedArr: originalDoc.attachments[0].nestedArr.concat(VALUE_AS_NUMBER),
+            neastedArr: originalDoc.attachments[0].neastedArr.concat(VALUE_AS_NUMBER),
           }])
         }
 
@@ -602,7 +603,7 @@ tap.test('HTTP PATCH /', async t => {
       t.test('ok with casting of array in array', async t => {
         const UPDATE_COMMAND = {
           $addToSet: {
-            'attachments.0.nestedArr': VALUE_AS_STRING,
+            'attachments.0.neastedArr': VALUE_AS_STRING,
           },
         }
 
@@ -628,7 +629,7 @@ tap.test('HTTP PATCH /', async t => {
           const originalDoc = EXPECTED_DOCUMENTS_TO_UPDATE.find(doc => doc._id.toString() === itemOnDb._id.toString())
           t.strictSame(itemOnDb.attachments, [{
             ...originalDoc.attachments[0],
-            nestedArr: originalDoc.attachments[0].nestedArr.concat(VALUE_AS_NUMBER),
+            neastedArr: originalDoc.attachments[0].neastedArr.concat(VALUE_AS_NUMBER),
           }])
         }
 
@@ -681,32 +682,6 @@ tap.test('HTTP PATCH /', async t => {
     requiredFieldNames.map(
       name => makeCheck(t, name, { $unset: { [name]: true } })
     )
-  })
-
-  t.test('- filter with text query (_q) with not fields not included in JSON Schema returns 400', async t => {
-    const { fastify, collection } = await setUpTest(t)
-
-    const response = await fastify.inject({
-      method: 'PATCH',
-      url: `${prefix}/?_q=${JSON.stringify({ not_a_field: { $gt: 20 } })}`,
-      payload: UPDATE_COMMAND,
-      headers: { userId: newUpdaterId },
-    })
-
-    const expectedResponse = {
-      statusCode: 400,
-      error: 'Bad Request',
-      message: 'Unknown field: not_a_field',
-    }
-
-    t.strictSame(response.statusCode, 400)
-    t.ok(/application\/json/.test(response.headers['content-type']))
-    t.strictSame(JSON.parse(response.payload), expectedResponse)
-
-    const documents = await collection.find().toArray()
-    t.strictSame(documents, fixtures)
-
-    t.end()
   })
 
   t.end()

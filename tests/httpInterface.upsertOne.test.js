@@ -17,7 +17,7 @@
 'use strict'
 
 const tap = require('tap')
-const { omit: lomit } = require('lodash')
+const { omit } = require('ramda')
 
 const { fixtures, newUpdaterId } = require('./utils')
 const { setUpTest, prefix, getHeaders } = require('./httpInterface.utils')
@@ -164,7 +164,7 @@ tap.test('HTTP POST /upsert-one', async t => {
           delete actual.updatedAt
           t.strictSame(actual, expected)
         } else {
-          const otherProperties = lomit(responseDocument, ['_id', 'name'])
+          const otherProperties = omit(['_id', 'name'], responseDocument)
           t.strictSame(otherProperties, UPDATES)
         }
         t.end()
@@ -212,9 +212,9 @@ tap.test('HTTP POST /upsert-one', async t => {
       t.ok(Number.isFinite(new Date(actual.updatedAt).getTime()))
       delete actual.updatedAt
 
-      const expected = lomit(
-        { ...HTTP_DOC, updaterId: newUpdaterId },
-        ['authorAddressId', 'updatedAt']
+      const expected = omit(
+        ['authorAddressId', 'updatedAt'],
+        { ...HTTP_DOC, updaterId: newUpdaterId }
       )
 
       t.strictSame(actual, expected)
@@ -359,7 +359,7 @@ tap.test('HTTP POST /upsert-one', async t => {
               t.strictSame(actual, expected)
             }
           } else {
-            const otherProperties = lomit(responseDocument, ['_id'])
+            const otherProperties = omit(['_id'], responseDocument)
             t.strictSame(otherProperties, NULL_NAME_UPDATES)
           }
           t.end()

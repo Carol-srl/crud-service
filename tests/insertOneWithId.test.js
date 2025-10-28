@@ -116,8 +116,7 @@ t.test('insertOneWithId', async t => {
       t.plan(1)
 
       try {
-        // eslint-disable-next-line no-empty-function
-        await crudService.insertMany(context, [{ ...DOC, [standardField]: 'some truly value' }], { parseAndCastBody: () => {} })
+        await crudService.insertMany(context, [{ ...DOC, [standardField]: 'some truly value' }])
         t.fail()
       } catch (error) {
         t.equal(error.message, `${standardField} cannot be specified`)

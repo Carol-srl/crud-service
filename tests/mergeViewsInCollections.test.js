@@ -36,7 +36,6 @@ tap.test('mergeViewsInCollections', t => {
     t.strictSame(mergedFelines, {
       name: 'felines',
       endpointBasePath: '/felines-endpoint',
-      enableLookup: false,
       defaultState: 'PUBLIC',
       fields: felinesColl.fields,
       indexes: felinesColl.indexes,
@@ -99,7 +98,6 @@ tap.test('mergeViewsInCollections', t => {
     t.strictSame(mergedCanines, {
       name: 'canines',
       endpointBasePath: '/canines-endpoint',
-      enableLookup: false,
       defaultState: 'PUBLIC',
       fields: caninesColl.fields,
       source: 'dogs',
@@ -131,7 +129,6 @@ tap.test('mergeViewsInCollections', t => {
     t.strictSame(view, {
       name: 'store-open',
       endpointBasePath: '/store-open-endpoint',
-      enableLookup: false,
       defaultState: 'PUBLIC',
       fields: openStoresColl.fields,
       indexes: openStoresColl.indexes,

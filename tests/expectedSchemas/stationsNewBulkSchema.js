@@ -19,7 +19,7 @@
 module.exports = {
   'summary': 'Insert new items in the stations collection.',
   'tags': [
-    'stations endpoint',
+    'Stations Endpoint',
   ],
   'body': {
     'operationId': 'stations__MIA__postBulk__MIA__body',
@@ -40,25 +40,10 @@ module.exports = {
           'nullable': true,
         },
         'Direttrici': {
-          'type': [
-            'array',
-            'string',
-            'null',
-          ],
-          'anyOf': [
-            {
-              'type': 'array',
-              'items': {
-                'type': 'string',
-                'nullable': true,
-              },
-              'nullable': true,
-            },
-            {
-              'type': 'string',
-              'nullable': true,
-            },
-          ],
+          'type': 'array',
+          'items': {
+            'type': 'string',
+          },
           'nullable': true,
         },
         'Indirizzo': {
@@ -68,23 +53,6 @@ module.exports = {
         'country': {
           'type': 'string',
           'nullable': true,
-        },
-        'nonNullableDate': {
-          'example': '1997-04-24T07:00:00.000Z',
-          'type': 'string',
-          'nullable': false,
-          'anyOf': [
-            {
-              'format': 'date-time',
-            },
-            {
-              'format': 'date',
-            },
-            {
-              'format': 'time',
-            },
-          ],
-          'description': '"date-time" according with https://tools.ietf.org/html/rfc3339#section-5.6',
         },
         '__STATE__': {
           'type': 'string',
@@ -112,7 +80,9 @@ module.exports = {
             'type': 'string',
             'pattern': '^(?!\\s*$).+',
             'description': 'String identifier of the document in the collection',
-            'example': '00000000-0000-4000-0000-000000000000',
+            'examples': [
+              '00000000-0000-4000-0000-000000000000',
+            ],
           },
         },
       },

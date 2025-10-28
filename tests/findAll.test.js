@@ -19,6 +19,7 @@
 const tap = require('tap')
 const abstractLogger = require('abstract-logging')
 const { MongoClient } = require('mongodb')
+const { omit } = require('ramda')
 
 const { STATES } = require('../lib/consts')
 const CrudService = require('../lib/CrudService')
@@ -31,10 +32,12 @@ const {
   getMongoDatabaseName,
   getMongoURL,
   BOOKS_COLLECTION_NAME,
+  RAW_PROJECTION_PLAIN_INCLUSIVE,
+  RAW_PROJECTION_PLAIN_EXCLUSIVE,
 } = require('./utils')
 
 const EMPTY_QUERY = {}
-const DEFAULT_PROJECTION = { _id: 1 }
+const ONLY_ID_PROJECTION = []
 const ALL_FIELDS = Object.keys(publicFixtures[0])
 
 const context = {
@@ -84,7 +87,7 @@ tap.test('findAll', async t => {
     t.test('could return an empty array', async t => {
       t.plan(1)
 
-      const data = await crudService.findAll(context, { foo: 'bar' }, DEFAULT_PROJECTION).toArray()
+      const data = await crudService.findAll(context, { foo: 'bar' }, ONLY_ID_PROJECTION).toArray()
 
       t.strictSame(data, [])
     })
@@ -104,7 +107,7 @@ tap.test('findAll', async t => {
     t.test('could return an empty array', async t => {
       t.plan(1)
 
-      const data = await crudService.findAll(context, { foo: 'bar' }, DEFAULT_PROJECTION).toArray()
+      const data = await crudService.findAll(context, { foo: 'bar' }, ONLY_ID_PROJECTION).toArray()
 
       t.strictSame(data, [])
     })
@@ -131,7 +134,7 @@ tap.test('findAll', async t => {
     t.test('should return only _id if no projection is specified', async t => {
       t.plan(1)
 
-      const data = await crudService.findAll(context, EMPTY_QUERY, DEFAULT_PROJECTION).toArray()
+      const data = await crudService.findAll(context, EMPTY_QUERY, ONLY_ID_PROJECTION).toArray()
 
       t.strictSame(data, publicFixtures.map(mapOnlyId))
     })
@@ -139,7 +142,7 @@ tap.test('findAll', async t => {
     t.test('should return only _id without projection', async t => {
       t.plan(1)
 
-      const data = await crudService.findAll(context, EMPTY_QUERY, DEFAULT_PROJECTION).toArray()
+      const data = await crudService.findAll(context, EMPTY_QUERY).toArray()
 
       t.strictSame(data, publicFixtures.map(mapOnlyId))
     })
@@ -151,7 +154,7 @@ tap.test('findAll', async t => {
     t.test('should return with the correct order ascendant', async t => {
       t.plan(1)
 
-      const data = await crudService.findAll(context, EMPTY_QUERY, DEFAULT_PROJECTION, { price: 1 }).toArray()
+      const data = await crudService.findAll(context, EMPTY_QUERY, ONLY_ID_PROJECTION, { price: 1 }).toArray()
       t.strictSame(data, publicFixtures
         .sort((a, b) => sortByPrice(a, b, 1))
         .map(mapOnlyId)
@@ -161,7 +164,7 @@ tap.test('findAll', async t => {
     t.test('should return with the correct order descendent', async t => {
       t.plan(1)
 
-      const data = await crudService.findAll(context, EMPTY_QUERY, DEFAULT_PROJECTION, { price: -1 }).toArray()
+      const data = await crudService.findAll(context, EMPTY_QUERY, ONLY_ID_PROJECTION, { price: -1 }).toArray()
 
       t.strictSame(data, publicFixtures
         .sort((a, b) => sortByPrice(a, b, -1))
@@ -172,7 +175,7 @@ tap.test('findAll', async t => {
     t.test('should return with the correct order ascendant for multiple fields', async t => {
       t.plan(1)
 
-      const data = await crudService.findAll(context, EMPTY_QUERY, DEFAULT_PROJECTION, { price: 1, name: 1 }).toArray()
+      const data = await crudService.findAll(context, EMPTY_QUERY, ONLY_ID_PROJECTION, { price: 1, name: 1 }).toArray()
       t.strictSame(data, publicFixtures
         .sort((a, b) => sortByName(a, b, 1))
         .sort((a, b) => sortByPrice(a, b, 1))
@@ -186,7 +189,7 @@ tap.test('findAll', async t => {
       const data = await crudService.findAll(
         context,
         EMPTY_QUERY,
-        DEFAULT_PROJECTION,
+        ONLY_ID_PROJECTION,
         { price: -1, name: -1 }
       ).toArray()
       t.strictSame(data, publicFixtures
@@ -199,7 +202,7 @@ tap.test('findAll', async t => {
     t.test('should return with the correct order: ascendant for the first field, descendent for the second', async t => {
       t.plan(1)
 
-      const data = await crudService.findAll(context, EMPTY_QUERY, DEFAULT_PROJECTION, { price: 1, name: -1 }).toArray()
+      const data = await crudService.findAll(context, EMPTY_QUERY, ONLY_ID_PROJECTION, { price: 1, name: -1 }).toArray()
       t.strictSame(data, publicFixtures
         .sort((a, b) => sortByName(a, b, -1))
         .sort((a, b) => sortByPrice(a, b, 1))
@@ -210,7 +213,7 @@ tap.test('findAll', async t => {
     t.test('should return with the correct order: descendent for the first field, ascendant for the second', async t => {
       t.plan(1)
 
-      const data = await crudService.findAll(context, EMPTY_QUERY, DEFAULT_PROJECTION, { price: -1, name: 1 }).toArray()
+      const data = await crudService.findAll(context, EMPTY_QUERY, ONLY_ID_PROJECTION, { price: -1, name: 1 }).toArray()
       t.strictSame(data, publicFixtures
         .sort((a, b) => sortByName(a, b, 1))
         .sort((a, b) => sortByPrice(a, b, -1))
@@ -224,7 +227,7 @@ tap.test('findAll', async t => {
       const data = await crudService.findAll(
         context,
         EMPTY_QUERY,
-        DEFAULT_PROJECTION,
+        ONLY_ID_PROJECTION,
         { price: -1, name: 1, publishDate: 1 }
       ).toArray()
       t.strictSame(data, publicFixtures
@@ -241,7 +244,7 @@ tap.test('findAll', async t => {
       const data = await crudService.findAll(
         context,
         EMPTY_QUERY,
-        DEFAULT_PROJECTION,
+        ONLY_ID_PROJECTION,
         { price: -1, 'attachments.name': 1, publishDate: 1 }
       ).toArray()
       t.strictSame(data, publicFixtures
@@ -264,7 +267,7 @@ tap.test('findAll', async t => {
       const data = await crudService.findAll(
         context,
         EMPTY_QUERY,
-        DEFAULT_PROJECTION,
+        ONLY_ID_PROJECTION,
         { price: 1 },
         SKIP_COUNT
       ).toArray()
@@ -288,7 +291,7 @@ tap.test('findAll', async t => {
       const data = await crudService.findAll(
         context,
         EMPTY_QUERY,
-        DEFAULT_PROJECTION,
+        ONLY_ID_PROJECTION,
         { price: 1 },
         0,
         LIMIT
@@ -312,7 +315,7 @@ tap.test('findAll', async t => {
       const data = await crudService.findAll(
         context,
         EMPTY_QUERY,
-        DEFAULT_PROJECTION,
+        ONLY_ID_PROJECTION,
         { price: 1 },
         0,
         500,
@@ -333,11 +336,11 @@ tap.test('findAll', async t => {
         {
           attachments: {
             $elemMatch: {
-              nestedArr: { $in: [3] },
+              neastedArr: { $in: [3] },
             },
           },
         },
-        DEFAULT_PROJECTION,
+        ONLY_ID_PROJECTION,
         { price: 1 },
         0,
         500,
@@ -347,10 +350,102 @@ tap.test('findAll', async t => {
       const mf = f => {
         return f.attachments
           && f.attachments.some(a => {
-            return a.nestedArr && a.nestedArr.some(fp => fp === 3)
+            return a.neastedArr && a.neastedArr.some(fp => fp === 3)
           })
       }
       t.strictSame(data, fixtures.filter(mf).map(mapOnlyId))
+    })
+  })
+
+  t.test('rawProjection', t => {
+    t.plan(4)
+
+    const SORT = undefined
+    const SKIP = 0
+    const LIMIT = 20
+
+    const expectedDocs = fixtures.map((doc) => {
+      return doc.attachments
+        ? {
+          _id: doc._id,
+          isbn: doc.isbn,
+          price: doc.price,
+          attachments: doc.attachments,
+        }
+        : {
+          _id: doc._id,
+          isbn: doc.isbn,
+          price: doc.price,
+        }
+    })
+
+    const expectedDocsWithExcludedFields = fixtures.map((doc) => {
+      const docCopy = { ...doc }
+      return omit(['attachments', 'isbn', 'price'], docCopy)
+    })
+
+    t.test('should return only the right fields', async t => {
+      t.plan(1)
+
+      const data = await crudService.findAll(
+        context,
+        EMPTY_QUERY,
+        [...ONLY_ID_PROJECTION, RAW_PROJECTION_PLAIN_INCLUSIVE],
+        SORT,
+        SKIP,
+        LIMIT,
+        [STATES.DRAFT, STATES.PUBLIC, STATES.TRASH, STATES.DELETED]
+      ).toArray()
+
+      t.strictSame(data, expectedDocs)
+    })
+
+    t.test('should override fields in _p parameter', async t => {
+      t.plan(1)
+
+      const data = await crudService.findAll(
+        context,
+        EMPTY_QUERY,
+        ['attachments', RAW_PROJECTION_PLAIN_INCLUSIVE],
+        SORT,
+        SKIP,
+        LIMIT,
+        [STATES.DRAFT, STATES.PUBLIC, STATES.TRASH, STATES.DELETED]
+      ).toArray()
+
+      t.strictSame(data, expectedDocs)
+    })
+
+    t.test('should exclude specified fields', async t => {
+      t.plan(1)
+
+      const data = await crudService.findAll(
+        context,
+        EMPTY_QUERY,
+        [RAW_PROJECTION_PLAIN_EXCLUSIVE],
+        SORT,
+        SKIP,
+        LIMIT,
+        [STATES.DRAFT, STATES.PUBLIC, STATES.TRASH, STATES.DELETED]
+      ).toArray()
+
+      t.strictSame(data, expectedDocsWithExcludedFields)
+    })
+
+    t.test('should exclude specified fields overridding existing _p specification', async t => {
+      t.plan(1)
+
+      const data = await crudService.findAll(
+        context,
+        EMPTY_QUERY,
+        ['attachments', RAW_PROJECTION_PLAIN_EXCLUSIVE],
+        SORT,
+        SKIP,
+        LIMIT,
+        [STATES.DRAFT, STATES.PUBLIC, STATES.TRASH, STATES.DELETED]
+      ).toArray()
+
+      t.strictSame(data, expectedDocsWithExcludedFields)
     })
   })
 })

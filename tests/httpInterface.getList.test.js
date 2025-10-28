@@ -22,6 +22,7 @@ const {
   publicFixtures,
   fixtures,
   stationFixtures,
+  lotOfBooksFixtures,
   RAW_PROJECTION,
   RAW_PROJECTION_FIRST_OP,
   RAW_PROJECTION_PLAIN_INCLUSIVE,
@@ -35,7 +36,7 @@ const {
   sortByAdditionalInfo,
 } = require('./utils')
 const { setUpTest, prefix, stationsPrefix, getHeaders } = require('./httpInterface.utils')
-const { ObjectId } = require('mongodb')
+const booksCollectionDefinition = require('./collectionDefinitions/books')
 
 const [STATION_DOC] = stationFixtures
 const HTTP_STATION_DOC = JSON.parse(JSON.stringify(STATION_DOC))
@@ -202,12 +203,6 @@ tap.test('HTTP GET /', async t => {
       found: HTTP_PUBLIC_FIXTURES.filter(f => f.price > 20 && !f.additionalInfo),
     },
     {
-      name: 'with stringified ISO Date in query filter',
-      url: `/?_q=${JSON.stringify({ 'editionsDates.date': { $lt: new Date('2020').toISOString() } })}`,
-      acl_rows: undefined,
-      found: HTTP_PUBLIC_FIXTURES.filter(f => Boolean(f.editionsDates)),
-    },
-    {
       name: 'with filter by additionalInfo nested with dot notation',
       url: `/?_q=${JSON.stringify({ 'additionalInfo.notes.mynote': 'good' })}`,
       acl_rows: undefined,
@@ -243,9 +238,9 @@ tap.test('HTTP GET /', async t => {
       acl_rows: undefined,
       found: [
         { _id: '111111111111111111111111' },
+        { _id: '444444444444444444444444' },
         { _id: '222222222222222222222222' },
         { _id: '333333333333333333333333' },
-        { _id: '444444444444444444444444' },
       ],
     },
     {
@@ -254,9 +249,9 @@ tap.test('HTTP GET /', async t => {
       acl_rows: undefined,
       found: [
         { _id: '111111111111111111111111' },
+        { _id: '444444444444444444444444' },
         { _id: '222222222222222222222222' },
         { _id: '333333333333333333333333' },
-        { _id: '444444444444444444444444' },
       ],
     },
     {
@@ -345,13 +340,13 @@ tap.test('HTTP GET /', async t => {
     },
     {
       name: '$elemMatch array rawobject array',
-      url: `/?_p=_id&_q=${JSON.stringify({ attachments: { $elemMatch: { nestedArr: { $in: [3] } } } })}`,
+      url: `/?_p=_id&_q=${JSON.stringify({ attachments: { $elemMatch: { neastedArr: { $in: [3] } } } })}`,
       acl_rows: undefined,
       acl_read_columns: undefined,
       found: fixtures.filter(f => {
         return f.attachments
           && f.attachments.some(a => {
-            return a.nestedArr && a.nestedArr.some(fp => fp === 3)
+            return a.neastedArr && a.neastedArr.some(fp => fp === 3)
           })
       }).map(f => ({ _id: f._id.toString() })),
     },
@@ -391,7 +386,7 @@ tap.test('HTTP GET /', async t => {
         attachments: [
           {
             name: 'note',
-            nestedArr: [1, 2, 3],
+            neastedArr: [1, 2, 3],
             detail: {
               size: 9,
             },
@@ -521,6 +516,8 @@ tap.test('HTTP GET /', async t => {
     },
   ]
 
+  const testsConfToExport = [...tests]
+
   /*
     rawProjection tests are added only if MongoDB version is 4.4 or above because
     they contain projection with aggregation expression not supported in older MongoDB version
@@ -597,7 +594,7 @@ tap.test('HTTP GET /', async t => {
     tests.push(...rawProjectionWithAggregationTests)
   }
 
-  t.plan(tests.length)
+  t.plan(tests.length + testsConfToExport.length)
   // it is safe to instantiate the test once, since all
   // the tests only perform reads on the collection
   const { fastify, collection } = await setUpTest(t)
@@ -614,7 +611,7 @@ tap.test('HTTP GET /', async t => {
       })
 
       t.test('should return 200', t => {
-        t.strictSame(response.statusCode, 200, response.payload)
+        t.strictSame(response.statusCode, 200)
         t.end()
       })
 
@@ -625,6 +622,45 @@ tap.test('HTTP GET /', async t => {
 
       t.test('should return the document', t => {
         t.strictSame(JSON.parse(response.payload), found)
+        t.end()
+      })
+
+      t.test('should keep the document as is in database', async t => {
+        const documents = await collection.find().toArray()
+        t.strictSame(documents, fixtures)
+        t.end()
+      })
+
+      t.end()
+    })
+  })
+
+  // Test EXPORT endpoints, which return x-ndjson payload
+  testsConfToExport.map(testConfToExport).forEach(testConf => {
+    const { name, found, ...conf } = testConf
+
+    t.test(`EXPORT ${name}`, async t => {
+      const response = await fastify.inject({
+        method: 'GET',
+        url: prefix + conf.url,
+        headers: getHeaders(conf),
+      })
+
+      t.test('should return 200', t => {
+        t.strictSame(response.statusCode, 200)
+        t.end()
+      })
+
+      t.test('should return "application/x-ndjson"', t => {
+        t.ok(/application\/x-ndjson/.test(response.headers['content-type']))
+        t.end()
+      })
+
+      t.test('should return the document', t => {
+        const documents = response.payload.split('\n')
+          .filter(s => s !== '')
+          .map(JSON.parse)
+        t.strictSame(documents, found)
         t.end()
       })
 
@@ -707,7 +743,7 @@ tap.test('HTTP GET / - $text search', async t => {
     }
   }
 
-  t.plan(textTests.length)
+  t.plan(textTests.length * 2)
   // it is safe to instantiate the test once, since all
   // the tests only perform reads on the collection
   const { fastify, collection } = await setUpTest(t)
@@ -756,47 +792,48 @@ tap.test('HTTP GET / - $text search', async t => {
       t.end()
     })
   })
+
+  // Test EXPORT endpoints, which return x-ndjson payload
+  textTests.map(testConfToExport).forEach(testConf => {
+    const { name, found, ...conf } = testConf
+
+    t.test(name, async t => {
+      const response = await fastify.inject({
+        method: 'GET',
+        url: prefix + conf.url,
+        headers: getHeaders(conf),
+      })
+
+      t.test('should return 200', t => {
+        t.strictSame(response.statusCode, 200)
+        t.end()
+      })
+
+      t.test('should return "application/x-ndjson"', t => {
+        t.ok(/application\/x-ndjson/.test(response.headers['content-type']))
+        t.end()
+      })
+
+      t.test('should return the document', t => {
+        const documents = response.payload.split('\n')
+          .filter(s => s !== '')
+          .map(JSON.parse)
+        t.strictSame(documents, found)
+        t.end()
+      })
+      t.test('should keep the document as is in database', async t => {
+        const documents = await collection.find().toArray()
+        t.strictSame(documents, fixtures)
+        t.end()
+      })
+
+      t.end()
+    })
+  })
 })
 
 tap.test('HTTP GET / ', async t => {
-  const { fastify, collection, resetCollection } = await setUpTest(t, [], undefined, undefined, true)
-  t.test('cast correctly nested object with schema', async t => {
-    const DOC_TEST = {
-      _id: ObjectId.createFromHexString('211111111111111111111111'),
-      metadata: {
-        somethingNumber: '3333',
-      },
-      attachments: [{
-        name: 'the-note',
-        detail: {
-          size: '6',
-        },
-        should: 'be removed',
-      }],
-      [__STATE__]: STATES.PUBLIC,
-    }
-
-    await resetCollection([DOC_TEST])
-
-    const response = await fastify.inject({
-      method: 'GET',
-      url: `${prefix}/`,
-      headers: {},
-    })
-    t.strictSame(JSON.parse(response.payload)[0].metadata, {
-      somethingNumber: 3333,
-    })
-    t.strictSame(JSON.parse(response.payload)[0].attachments, [
-      {
-        name: 'the-note',
-        detail: {
-          size: 6,
-        },
-      },
-    ])
-
-    t.end()
-  })
+  const { fastify, collection, resetCollection } = await setUpTest(t, [])
 
   t.test('filter on nested object with object notation cannot be used', async t => {
     // Documentation purpose
@@ -840,37 +877,11 @@ tap.test('HTTP GET / ', async t => {
     t.strictSame(JSON.parse(response.payload), {
       statusCode: 400,
       error: 'Bad Request',
-      message: 'querystring must NOT have additional properties. Property "metadata" is not defined in validation schema',
+      message: 'querystring must NOT have additional properties',
     })
 
     t.end()
   })
-
-  t.test('filter with text query (_q) with not fields not included in JSON Schema returns 400', async t => {
-    const { fastify, collection } = await setUpTest(t)
-
-    const response = await fastify.inject({
-      method: 'GET',
-      url: `${prefix}/?_q=${JSON.stringify({ not_a_field: { $gt: 20 } })}`,
-      headers: {},
-    })
-
-    const expectedResponse = {
-      statusCode: 400,
-      error: 'Bad Request',
-      message: 'Unknown field: not_a_field',
-    }
-
-    t.strictSame(response.statusCode, 400)
-    t.ok(/application\/json/.test(response.headers['content-type']))
-    t.strictSame(JSON.parse(response.payload), expectedResponse)
-
-    const documents = await collection.find().toArray()
-    t.strictSame(documents, fixtures)
-
-    t.end()
-  })
-
 
   t.test('(missing property)', async t => {
     await resetCollection()
@@ -924,7 +935,7 @@ tap.test('HTTP GET / ', async t => {
 
   t.test('serialize correctly data on GET (a string should be casted to number to match schema)', async t => {
     const DOC = {
-      ...fixtures[1],
+      ...fixtures[0],
       // expected to be casted to number
       price: '44',
       ignoreMe: 'expect to be ignored',
@@ -1043,38 +1054,6 @@ tap.test('HTTP GET / ', async t => {
       t.end()
     })
 
-    t.test('with 500 without exit if collection contains invalid data', async assert => {
-      const DOC = {
-        ...fixtures[0],
-        price: 'thisIsAstring',
-      }
-      const jsonError = [
-        {
-          'instancePath': '/price',
-          'schemaPath': '#/properties/price/type',
-          'keyword': 'type',
-          'params': {
-            'type': 'number',
-          },
-          'message': 'must be number',
-        },
-      ]
-
-      await resetCollection()
-      await collection.insertOne(DOC)
-
-      try {
-        await fastify.inject({
-          method: 'GET',
-          url: `${prefix}/`,
-        })
-        assert.fail('It should throw output validation error')
-      } catch (error) {
-        assert.strictSame(error, jsonError)
-      }
-      assert.end()
-    })
-
     t.test('with 400 for mixed _rawp and _p', async t => {
       UNALLOWED_RAW_PROJECTIONS.forEach(projection => {
         t.test('Should not allow raw projection with projection', async assert => {
@@ -1174,6 +1153,93 @@ tap.test('HTTP GET / with _id in querystring', async t => {
     })
   })
 
+  // Test EXPORT endpoints, which return x-ndjson payload
+  tests.map(testConfToExport).forEach(testConf => {
+    const { name, found, ...conf } = testConf
+
+    t.test(name, async t => {
+      const response = await fastify.inject({
+        method: 'GET',
+        url: stationsPrefix + conf.url,
+        headers: getHeaders(conf),
+      })
+
+      t.test('should return 200', t => {
+        t.strictSame(response.statusCode, 200)
+        t.end()
+      })
+
+      t.test('should return "application/x-ndjson"', assert => {
+        assert.ok(/application\/x-ndjson/.test(response.headers['content-type']))
+        assert.end()
+      })
+
+      t.test('should return the document', assert => {
+        const documents = response.payload.split('\n')
+          .filter(s => s !== '')
+          .map(JSON.parse)
+        assert.strictSame(documents, found)
+        assert.end()
+      })
+      t.test('should keep the document as is in database', async assert => {
+        const documents = await collection.find().toArray()
+        assert.strictSame(documents, stationFixtures)
+        assert.end()
+      })
+
+      t.end()
+    })
+  })
+
+  t.end()
+})
+
+tap.test('HTTP GET /export', async t => {
+  const mongoDbCollectionName = booksCollectionDefinition.name
+  const { fastify } = await setUpTest(t, lotOfBooksFixtures, mongoDbCollectionName)
+
+  t.test('should return all documents', async t => {
+    const response = await fastify.inject({
+      method: 'GET',
+      url: `${prefix}/export`,
+    })
+    const parseBodyResponse = response.body.split('\n').filter(item => item)
+      .map(item => JSON.parse(item))
+
+    t.strictSame(response.statusCode, 200)
+    t.equal(parseBodyResponse.length, lotOfBooksFixtures.length)
+
+    t.end()
+  })
+
+  t.test('should return only 3 documents', async(t) => {
+    const response = await fastify.inject({
+      method: 'GET',
+      url: `${prefix}/export?_l=3`,
+    })
+    const parseBodyResponse = response.body.split('\n').filter(item => item)
+      .map(item => JSON.parse(item))
+
+    t.strictSame(response.statusCode, 200)
+    t.equal(parseBodyResponse.length, 3)
+
+    t.end()
+  })
+
+  t.test('should return greater than previous maximum default (200 documents)', async(t) => {
+    const response = await fastify.inject({
+      method: 'GET',
+      url: `${prefix}/export?_l=201`,
+    })
+    const parseBodyResponse = response.body.split('\n').filter(item => item)
+      .map(item => JSON.parse(item))
+
+    t.strictSame(response.statusCode, 200)
+    t.equal(parseBodyResponse.length, 201)
+
+    t.end()
+  })
+
   t.end()
 })
 
@@ -1215,4 +1281,9 @@ if (process.env.MONGO_VERSION === '4.0') {
 
     t.end()
   })
+}
+
+function testConfToExport(testConf) {
+  const url = testConf.url.replace('/', '/export')
+  return Object.assign(testConf, { url })
 }

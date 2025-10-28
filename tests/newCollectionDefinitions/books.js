@@ -22,16 +22,15 @@ module.exports = {
   name: 'books',
   endpointBasePath: '/books-endpoint',
   defaultState: 'DRAFT',
-  tags: ['Library'],
   schema: {
     type: 'object',
     required: [
       '_id',
-      '__STATE__',
       'creatorId',
       'createdAt',
       'updaterId',
       'updatedAt',
+      '__STATE__',
       'name',
       'isbn',
     ],
@@ -120,16 +119,6 @@ module.exports = {
         },
         description: 'Tag identification numbers',
       },
-      tagObjectIds: {
-        type: 'array',
-        items: {
-          type: 'string',
-          __mia_configuration: {
-            type: 'ObjectId',
-          },
-        },
-        description: 'Tag object ids',
-      },
       additionalInfo: {
         type: 'object',
         nullable: true,
@@ -154,7 +143,6 @@ module.exports = {
               properties: {
                 arrayItemObjectChildNumber: { type: 'number' },
                 anotherNumber: { type: 'number' },
-                integerNum: { type: 'integer' },
                 anotherObject: { type: 'object', nullable: true },
               },
               additionalProperties: true,
@@ -192,7 +180,7 @@ module.exports = {
                 size: { type: 'number' },
               },
             },
-            nestedArr: {
+            neastedArr: {
               type: 'array',
               items: { type: 'number' },
             },
@@ -205,16 +193,11 @@ module.exports = {
           required: ['name'],
           additionalProperties: false,
         },
-        nullable: true,
       },
       editionsDates: {
         type: 'array',
         items: {
           type: 'object',
-          properties: {
-            edition: { type: 'number' },
-            date: { type: 'string', format: 'date-time' },
-          },
           additionalProperties: true,
         },
         nullable: true,

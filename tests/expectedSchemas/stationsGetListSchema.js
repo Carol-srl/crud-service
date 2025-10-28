@@ -20,7 +20,7 @@ module.exports = {
   'summary': 'Returns a list of documents in stations',
   'description': 'Results can be filtered specifying the following parameters:',
   'tags': [
-    'stations endpoint',
+    'Stations Endpoint',
   ],
   'querystring': {
     'operationId': 'stations__MIA__getList__MIA__querystring',
@@ -30,16 +30,9 @@ module.exports = {
         'type': 'string',
         'pattern': '^(?!\\s*$).+',
         'description': 'String identifier of the document in the collection',
-        'example': '00000000-0000-4000-0000-000000000000',
-      },
-      'creatorId': {
-        'type': 'string',
-        'description': 'User id that has created this object',
-      },
-      'createdAt': {
-        'type': 'string',
-        'example': '1997-04-24T07:00:00.000Z',
-        'pattern': '^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2}))?$',
+        'examples': [
+          '00000000-0000-4000-0000-000000000000',
+        ],
       },
       'updaterId': {
         'type': 'string',
@@ -47,57 +40,38 @@ module.exports = {
       },
       'updatedAt': {
         'type': 'string',
-        'example': '1997-04-24T07:00:00.000Z',
         'pattern': '^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2}))?$',
+        'description': 'Date of the request that has performed the last change',
+        'examples': [
+          '2020-09-16T12:00:00.000Z',
+        ],
+      },
+      'creatorId': {
+        'type': 'string',
+        'description': 'User id that has created this object',
+      },
+      'createdAt': {
+        'type': 'string',
+        'pattern': '^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2}))?$',
+        'description': 'Date of the request that has performed the object creation',
+        'examples': [
+          '2020-09-16T12:00:00.000Z',
+        ],
       },
       'Cap': {
         'type': 'number',
-        'nullable': true,
       },
       'CodiceMIR': {
         'type': 'string',
-        'nullable': true,
       },
       'Comune': {
         'type': 'string',
-        'nullable': true,
-      },
-      'Direttrici': {
-        'type': [
-          'array',
-          'string',
-          'null',
-        ],
-        'anyOf': [
-          {
-            'type': 'array',
-            'items': {
-              'type': 'string',
-              'nullable': true,
-            },
-            'nullable': true,
-          },
-          {
-            'type': 'string',
-            'nullable': true,
-          },
-        ],
-        'nullable': true,
       },
       'Indirizzo': {
         'type': 'string',
-        'nullable': true,
       },
       'country': {
         'type': 'string',
-        'nullable': true,
-      },
-      'nonNullableDate': {
-        'type': 'string',
-        'example': '1997-04-24T07:00:00.000Z',
-        'pattern': '^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2}))?$',
-        'description': '"date-time" according with https://tools.ietf.org/html/rfc3339#section-5.6',
-        'nullable': false,
       },
       '_q': {
         'type': 'string',
@@ -106,7 +80,9 @@ module.exports = {
       '_p': {
         'type': 'string',
         'description': 'Return only the properties specified in a comma separated list',
-        'example': 'field1,field2,field3.nestedField',
+        'examples': [
+          'field1,field2,field3.nestedField',
+        ],
       },
       '_st': {
         'type': 'string',
@@ -134,13 +110,13 @@ module.exports = {
         'anyOf': [
           {
             'type': 'string',
-            'pattern': '^-?(_id|updaterId|updatedAt|creatorId|createdAt|__STATE__|Cap|CodiceMIR|Comune|Direttrici|Indirizzo|country|nonNullableDate)(\\.([^\\.,])+)*(,-?(_id|updaterId|updatedAt|creatorId|createdAt|__STATE__|Cap|CodiceMIR|Comune|Direttrici|Indirizzo|country|nonNullableDate)(\\.([^\\.,])+)*)*$',
+            'pattern': '^-?(_id|updaterId|updatedAt|creatorId|createdAt|__STATE__|Cap|CodiceMIR|Comune|Direttrici|Indirizzo|country)(\\.([^\\.,])+)*(,-?(_id|updaterId|updatedAt|creatorId|createdAt|__STATE__|Cap|CodiceMIR|Comune|Direttrici|Indirizzo|country)(\\.([^\\.,])+)*)*$',
           },
           {
             'type': 'array',
             'items': {
               'type': 'string',
-              'pattern': '^-?(_id|updaterId|updatedAt|creatorId|createdAt|__STATE__|Cap|CodiceMIR|Comune|Direttrici|Indirizzo|country|nonNullableDate)(\\.([^\\.,])+)*(,-?(_id|updaterId|updatedAt|creatorId|createdAt|__STATE__|Cap|CodiceMIR|Comune|Direttrici|Indirizzo|country|nonNullableDate)(\\.([^\\.,])+)*)*$',
+              'pattern': '^-?(_id|updaterId|updatedAt|creatorId|createdAt|__STATE__|Cap|CodiceMIR|Comune|Direttrici|Indirizzo|country)(\\.([^\\.,])+)*(,-?(_id|updaterId|updatedAt|creatorId|createdAt|__STATE__|Cap|CodiceMIR|Comune|Direttrici|Indirizzo|country)(\\.([^\\.,])+)*)*$',
             },
           },
         ],
@@ -166,8 +142,10 @@ module.exports = {
           },
           'updatedAt': {
             'type': 'string',
-            'example': '1997-04-24T07:00:00.000Z',
-            'nullable': false,
+            'format': 'date-time',
+            'examples': [
+              '2020-09-16T12:00:00.000Z',
+            ],
             'description': 'Date of the request that has performed the last change',
           },
           'creatorId': {
@@ -176,8 +154,10 @@ module.exports = {
           },
           'createdAt': {
             'type': 'string',
-            'example': '1997-04-24T07:00:00.000Z',
-            'nullable': false,
+            'format': 'date-time',
+            'examples': [
+              '2020-09-16T12:00:00.000Z',
+            ],
             'description': 'Date of the request that has performed the object creation',
           },
           '__STATE__': {
@@ -197,25 +177,10 @@ module.exports = {
             'nullable': true,
           },
           'Direttrici': {
-            'type': [
-              'array',
-              'string',
-              'null',
-            ],
-            'anyOf': [
-              {
-                'type': 'array',
-                'items': {
-                  'type': 'string',
-                  'nullable': true,
-                },
-                'nullable': true,
-              },
-              {
-                'type': 'string',
-                'nullable': true,
-              },
-            ],
+            'type': 'array',
+            'items': {
+              'type': 'string',
+            },
             'nullable': true,
           },
           'Indirizzo': {
@@ -225,11 +190,6 @@ module.exports = {
           'country': {
             'type': 'string',
             'nullable': true,
-          },
-          'nonNullableDate': {
-            'type': 'string',
-            'example': '1997-04-24T07:00:00.000Z',
-            'nullable': false,
           },
         },
       },

@@ -19,7 +19,7 @@
 const tap = require('tap')
 const abstractLogger = require('abstract-logging')
 const { MongoClient } = require('mongodb')
-const { omit: lomit } = require('lodash')
+const { omit } = require('ramda')
 
 const { STATES } = require('../lib/consts')
 const CrudService = require('../lib/CrudService')
@@ -32,7 +32,6 @@ const {
   getMongoDatabaseName,
   getMongoURL,
   BOOKS_COLLECTION_NAME,
-  getProjectionFromObject,
 } = require('./utils')
 
 const {
@@ -74,7 +73,7 @@ tap.test('upsertOne', async t => {
     [UPDATERID]: context.userId,
   }
 
-  const updatedDocProjection = getProjectionFromObject(updatedDoc)
+  const updatedDocProjection = Object.keys(updatedDoc)
   t.test('one matching doc', async t => {
     t.plan(3)
 
@@ -101,7 +100,7 @@ tap.test('upsertOne', async t => {
 
     await clearCollectionAndInsertFixtures(collection)
 
-    const ret = await crudService.upsertOne(context, updateCommand(), { name: 'Strange Book' }, { name: 1, price: 1 })
+    const ret = await crudService.upsertOne(context, updateCommand(), { name: 'Strange Book' }, ['name', 'price'])
     t.test('should return the new object', t => {
       t.plan(2)
       t.equal(ret.name, 'Strange Book')
@@ -111,7 +110,7 @@ tap.test('upsertOne', async t => {
     t.test('should insert the doc in the database', async t => {
       t.plan(1)
       const doc = await collection.findOne({ _id: ret._id })
-      const docWithoutId = lomit(doc, ['_id'])
+      const docWithoutId = omit(['_id'], doc)
 
       t.strictSame(docWithoutId, {
         name: 'Strange Book',
@@ -134,7 +133,7 @@ tap.test('upsertOne', async t => {
       $setOnInsert: {
         price: 50,
       },
-    }, { name: 'Strange Book' }, { name: 1, price: 1 })
+    }, { name: 'Strange Book' }, ['name', 'price'])
 
     t.test('should return the new object', t => {
       t.plan(2)
@@ -145,7 +144,7 @@ tap.test('upsertOne', async t => {
     t.test('should insert the doc in the database', async t => {
       t.plan(1)
       const doc = await collection.findOne({ _id: ret._id })
-      const docWithoutId = lomit(doc, ['_id'])
+      const docWithoutId = omit(['_id'], doc)
 
       t.strictSame(docWithoutId, {
         name: 'Strange Book',

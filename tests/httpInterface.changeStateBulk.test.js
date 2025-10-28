@@ -280,7 +280,7 @@ tap.test('HTTP POST /state', async t => {
             attachments: [
               {
                 name: 'unmatching',
-                nestedArr: [1, 2, 3],
+                neastedArr: [1, 2, 3],
                 detail: {
                   size: 9,
                 },
@@ -311,7 +311,7 @@ tap.test('HTTP POST /state', async t => {
             attachments: [
               {
                 name: 'note',
-                nestedArr: ['1', '2', '3'],
+                neastedArr: ['1', '2', '3'],
                 detail: {
                   size: '9',
                 },
@@ -501,8 +501,7 @@ tap.test('HTTP POST /state', async t => {
       t.strictSame(JSON.parse(response.payload), {
         statusCode: 400,
         error: 'Bad Request',
-        message: "body/0/filter/metadata must have required property 'somethingNumber'",
-        code: 'FST_ERR_VALIDATION',
+        message: "body must have required property 'somethingNumber'",
       })
 
       t.end()
@@ -519,7 +518,7 @@ tap.test('HTTP POST /state', async t => {
             _id: publicFixtures[0]._id,
             metadata: {
               somethingNumber: '3',
-              unknownField: 2,
+              uknownField: 2,
             },
           },
           stateTo: STATES.DRAFT,
@@ -533,7 +532,7 @@ tap.test('HTTP POST /state', async t => {
       t.strictSame(JSON.parse(response.payload), {
         statusCode: 400,
         error: 'Bad Request',
-        message: 'body/0/filter/metadata must NOT have additional properties. Property "unknownField" is not defined in validation schema',
+        message: 'body must NOT have additional properties',
       })
 
       t.end()

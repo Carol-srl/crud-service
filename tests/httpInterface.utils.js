@@ -34,9 +34,7 @@ async function setUpTest(
   tap,
   testFixtures = fixtures,
   mongoDBCollectionName = BOOKS_COLLECTION_NAME,
-  exposeMetrics = false,
-  strictOutputValidation = false,
-  openApiSpecification = 'swagger'
+  exposeMetrics = false
 ) {
   const databaseName = getMongoDatabaseName()
   const mongoURL = getMongoURL(databaseName)
@@ -54,12 +52,10 @@ async function setUpTest(
     COLLECTION_DEFINITION_FOLDER: join(__dirname, 'collectionDefinitions'),
     CRUD_LIMIT_CONSTRAINT_ENABLED,
     CRUD_MAX_LIMIT,
-    ENABLE_STRICT_OUTPUT_VALIDATION: strictOutputValidation,
     // The header key is case-insensitive. nodejs makes it lower case
     // Here is not in lower case for testing it
     USER_ID_HEADER_KEY: 'userId',
     VIEWS_DEFINITION_FOLDER: join(__dirname, 'viewsDefinitions'),
-    OPEN_API_SPECIFICATION: openApiSpecification,
   }
 
   const fastify = await lc39('./index', { logLevel, envVariables, exposeMetrics })
@@ -107,7 +103,7 @@ async function setUpMultipleCollectionTest(t, testFixtures, mongoDBCollectionNam
 
   for (const collectionName of mongoDBCollectionName) {
     const collection = database.collection(collectionName)
-
+    // eslint-disable-next-line no-await-in-loop
     await clearCollectionAndInsertFixtures(collection, testFixtures[collectionName])
     collections.push(collection)
   }
@@ -126,9 +122,8 @@ async function setUpMultipleCollectionTest(t, testFixtures, mongoDBCollectionNam
   const fastify = await lc39('./index', { logLevel, envVariables, exposeMetrics: false })
 
   t.teardown(async() => {
-    await fastify.close()
-    await database.dropDatabase()
     await client.close()
+    await fastify.close()
   })
 
   return { fastify, collections, database }

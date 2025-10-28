@@ -127,7 +127,6 @@ module.exports = {
               properties: {
                 arrayItemObjectChildNumber: { type: 'number' },
                 anotherNumber: { type: 'number' },
-                anotherObject: { type: 'object', nullable: true },
               },
               additionalProperties: true,
               required: ['arrayItemObjectChildNumber'],
@@ -172,7 +171,7 @@ module.exports = {
                 size: { type: 'number' },
               },
             },
-            nestedArr: {
+            neastedArr: {
               type: 'array',
               items: { type: 'number' },
             },

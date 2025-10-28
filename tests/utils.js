@@ -70,7 +70,7 @@ const fixtures = [
     attachments: [
       {
         name: 'note',
-        nestedArr: [1, 2, 3],
+        neastedArr: [1, 2, 3],
         detail: {
           size: 9,
         },
@@ -213,7 +213,7 @@ const fixtures = [
     attachments: [
       {
         name: 'my-name',
-        nestedArr: [1, 2, 66],
+        neastedArr: [1, 2, 66],
       },
     ],
     [CREATEDAT]: createdAtDate,
@@ -223,8 +223,6 @@ const fixtures = [
     [__STATE__]: STATES.PUBLIC,
   },
 ]
-
-const defaultSorting = { name: 1 }
 
 const RAW_PROJECTION = {
   attachments: {
@@ -391,22 +389,6 @@ const stationFixtures = [
     [UPDATEDAT]: updatedAtDate,
     [__STATE__]: STATES.PUBLIC,
   },
-  {
-    _id: '3bb78876-c8bb-4e02-bad5-440f220e9f73',
-    Cap: 20831,
-    CodiceMIR: 'S09001',
-    Comune: 'Seregno',
-    Direttrici: [
-      'D042',
-    ],
-    Indirizzo: 'Via Montello',
-    country: 'it',
-    [CREATEDAT]: createdAtDate,
-    [CREATORID]: creatorId,
-    [UPDATERID]: updaterId,
-    [UPDATEDAT]: updatedAtDate,
-    // Note: this document has been intentionally left without __STATE__ field
-  },
 ]
 
 async function clearCollectionAndInsertFixtures(collection, testFixtures = fixtures) {
@@ -495,7 +477,7 @@ function sortByAttachmentsName(a, b, sortType) {
   return sortByName(a.attachments[aIndex], b.attachments[bIndex], sortType)
 }
 
-const mongoHost = process.env.MONGO_HOST ?? '127.0.0.1:27017'
+const mongoHost = process.env.MONGO_HOST ?? 'mongodb://localhost:27017'
 
 /**
  * It creates a unique name for a Database to be used in tests. The name will include a series
@@ -522,15 +504,15 @@ const CRUD_MAX_LIMIT = 200
 
 function mockObjectId() {
   mock('mongodb', {
-
+    // eslint-disable-next-line no-shadow
     ObjectId: function ObjectId() {
       this.toString = () => '000000000000000000000000'
     },
   })
 }
 
-function getProjectionFromObject(collectionObj) {
-  return Object.keys(collectionObj).reduce((acc, key) => { return { ...acc, [key]: 1 } }, {})
+function mockUuidV4() {
+  mock('uuid', { v4: () => '00000000-0000-4000-0000-000000000000' })
 }
 
 module.exports = {
@@ -551,7 +533,6 @@ module.exports = {
   newUpdaterId: userId,
   oldUpdaterId: updaterId,
   fixtures,
-  defaultSorting,
   stationFixtures,
   lotOfBooksFixtures,
   publicFixtures: fixtures.filter(f => f[__STATE__] === STATES.PUBLIC),
@@ -564,5 +545,5 @@ module.exports = {
   sortByAttachmentsName,
   sortByAdditionalInfo,
   mockObjectId,
-  getProjectionFromObject,
+  mockUuidV4,
 }

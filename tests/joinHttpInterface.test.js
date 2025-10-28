@@ -167,16 +167,26 @@ tap.test('HTTP POST /join', async t => {
         },
       })
 
-      t.strictSame(response.statusCode, 400, response.payload)
-      t.ok(/application\/json/.test(response.headers['content-type']))
+      t.test('should return 404', t => {
+        t.plan(1)
+        t.strictSame(response.statusCode, 404, response.payload)
+      })
+      t.test('should return "application/json"', t => {
+        t.plan(1)
+        t.ok(/application\/json/.test(response.headers['content-type']))
+      })
+      t.test('should return the expected body', t => {
+        t.plan(1)
 
-      const actualBody = JSON.parse(response.payload)
-      t.strictSame(actualBody, {
-        error: 'Bad Request',
-        statusCode: 400,
-        message: 'CRUD endpoint "people_endpoint" does not exist',
+        const actualBody = JSON.parse(response.payload)
+        t.strictSame(actualBody, {
+          error: 'Not Found',
+          statusCode: 404,
+          message: 'CRUD endpoint "people_endpoint" does not exist',
+        })
       })
     })
+
     t.end()
   })
 
@@ -399,14 +409,23 @@ tap.test('HTTP POST /join', async t => {
         },
       })
 
-      t.strictSame(response.statusCode, 400, response.payload)
-      t.ok(/application\/json/.test(response.headers['content-type']))
+      t.test('should return 404', t => {
+        t.plan(1)
+        t.strictSame(response.statusCode, 404, response.payload)
+      })
+      t.test('should return "application/json"', t => {
+        t.plan(1)
+        t.ok(/application\/json/.test(response.headers['content-type']))
+      })
+      t.test('should return the expected body', t => {
+        t.plan(1)
 
-      const actualBody = JSON.parse(response.payload)
-      t.strictSame(actualBody, {
-        error: 'Bad Request',
-        statusCode: 400,
-        message: 'CRUD endpoint "address_statistics_endpoint" does not exist',
+        const actualBody = JSON.parse(response.payload)
+        t.strictSame(actualBody, {
+          error: 'Not Found',
+          statusCode: 404,
+          message: 'CRUD endpoint "address_statistics_endpoint" does not exist',
+        })
       })
     })
 
@@ -738,14 +757,23 @@ tap.test('HTTP POST /join', async t => {
         },
       })
 
-      t.strictSame(response.statusCode, 400, response.payload)
-      t.ok(/application\/json/.test(response.headers['content-type']))
+      t.test('should return 404', t => {
+        t.plan(1)
+        t.strictSame(response.statusCode, 404, response.payload)
+      })
+      t.test('should return "application/json"', t => {
+        t.plan(1)
+        t.ok(/application\/json/.test(response.headers['content-type']))
+      })
+      t.test('should return the expected body', t => {
+        t.plan(1)
 
-      const actualBody = JSON.parse(response.payload)
-      t.strictSame(actualBody, {
-        error: 'Bad Request',
-        statusCode: 400,
-        message: 'CRUD endpoint "addresses_endpoint" does not exist',
+        const actualBody = JSON.parse(response.payload)
+        t.strictSame(actualBody, {
+          error: 'Not Found',
+          statusCode: 404,
+          message: 'CRUD endpoint "addresses_endpoint" does not exist',
+        })
       })
     })
 
@@ -815,14 +843,23 @@ tap.test('HTTP POST /join', async t => {
         },
       })
 
-      t.strictSame(response.statusCode, 400, response.payload)
-      t.ok(/application\/json/.test(response.headers['content-type']))
+      t.test('should return 404', t => {
+        t.plan(1)
+        t.strictSame(response.statusCode, 404, response.payload)
+      })
+      t.test('should return "application/json"', t => {
+        t.plan(1)
+        t.ok(/application\/json/.test(response.headers['content-type']))
+      })
+      t.test('should return the expected body', t => {
+        t.plan(1)
 
-      const actualBody = JSON.parse(response.payload)
-      t.strictSame(actualBody, {
-        error: 'Bad Request',
-        statusCode: 400,
-        message: 'CRUD endpoint "addresses_endpoint" does not exist',
+        const actualBody = JSON.parse(response.payload)
+        t.strictSame(actualBody, {
+          error: 'Not Found',
+          statusCode: 404,
+          message: 'CRUD endpoint "addresses_endpoint" does not exist',
+        })
       })
     })
 

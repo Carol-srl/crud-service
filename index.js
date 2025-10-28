@@ -1,4 +1,3 @@
-/* eslint-disable no-await-in-loop */
 /*
  * Copyright 2023 Mia s.r.l.
  *
@@ -15,188 +14,203 @@
  * limitations under the License.
  */
 
+/* eslint-disable no-await-in-loop */
 'use strict'
 
 const fp = require('fastify-plugin')
 const fastifyEnv = require('@fastify/env')
-const fastifyMultipart = require('@fastify/multipart')
 
+const Ajv = require('ajv')
+const AjvCompiler = require('@fastify/ajv-compiler')
 const ajvFormats = require('ajv-formats')
 
-const { unset: lunset } = require('lodash')
 const { readdirSync } = require('fs')
 const { join } = require('path')
-const { JSONPath } = require('jsonpath-plus')
-
+const { omit } = require('ramda')
 
 const myPackage = require('./package')
+const QueryParser = require('./lib/QueryParser')
+const CrudService = require('./lib/CrudService')
+const ResultCaster = require('./lib/ResultCaster')
+const httpInterface = require('./lib/httpInterface')
+const JSONSchemaGenerator = require('./lib/JSONSchemaGenerator')
+const createIndexes = require('./lib/createIndexes')
+const { castCollectionId, getDatabaseNameByType } = require('./lib/pkFactories')
+const { SCHEMA_CUSTOM_KEYWORDS } = require('./lib/consts')
+const joinPlugin = require('./lib/joinPlugin')
+const generatePathFieldsForRawSchema = require('./lib/generatePathFieldsForRawSchema')
+const { getIdType, registerMongoInstances } = require('./lib/mongo/mongo-plugin')
+const mergeViewsInCollections = require('./lib/mergeViewsInCollections')
+
+const { compatibilityModelJsonSchema, modelJsonSchema } = require('./lib/model.jsonschema')
 const fastifyEnvSchema = require('./envSchema')
 
-const httpInterface = require('./lib/httpInterface')
-const loadModels = require('./lib/loadModels')
-const joinPlugin = require('./lib/joinPlugin')
+const ajv = new Ajv({ useDefaults: true })
+ajvFormats(ajv)
+const compatibilityValidate = ajv.compile(compatibilityModelJsonSchema)
+const validate = ajv.compile(modelJsonSchema)
 
-const {
-  SCHEMA_CUSTOM_KEYWORDS,
-} = require('./lib/consts')
-const { registerMongoInstances } = require('./lib/mongo/mongo-plugin')
-const { ajvSerializer } = require('./lib/validatorGetters')
-const { pointerSeparator } = require('./lib/JSONPath.utils')
-const { registerHelperRoutes } = require('./lib/helpersRoutes')
-const { addSerializerCompiler } = require('./lib/compilers')
-const {
-  addAclHook,
-  addHealthHooks,
-  addPreHandlerHooks,
-  addLookupHook,
-  addPatchViewHook,
-  addModelNameHook,
-} = require('./lib/hooks')
-
-function decorateCrud(fastify, model, modelName) {
-  fastify.decorate('crudService', model.crudService)
-  fastify.decorate('queryParser', model.queryParser)
-  fastify.decorate('allFieldNames', model.allFieldNames)
-  fastify.decorate('jsonSchemaGenerator', model.jsonSchemaGenerator)
-  fastify.decorate('jsonSchemaGeneratorWithNested', model.jsonSchemaGenerator)
-  fastify.decorate('modelName', modelName)
-  addModelNameHook(fastify, modelName)
-}
+const PREFIX_OF_INDEX_NAMES_TO_PRESERVE = 'preserve_'
+const VIEW_TYPE = 'view'
 
 async function registerCrud(fastify, { modelName, isView }) {
-  if (!fastify.mongo) {
-    throw new Error('`fastify.mongo` is undefined!')
-  }
-  if (!modelName) {
-    throw new Error('`modelName` is undefined!')
-  }
+  if (!fastify.mongo) { throw new Error('`fastify.mongo` is undefined!') }
+  if (!modelName) { throw new Error('`modelName` is undefined!') }
 
   fastify.log.trace({ modelName }, 'Registering CRUD')
 
   const model = fastify.models[modelName]
+
+  fastify.decorate('crudService', model.crudService)
+  fastify.decorate('queryParser', model.queryParser)
+  fastify.decorate('castResultsAsStream', model.castResultsAsStream)
+  fastify.decorate('castItem', model.castItem)
+  fastify.decorate('allFieldNames', model.allFieldNames)
+  fastify.decorate('jsonSchemaGenerator', model.jsonSchemaGenerator)
+  fastify.decorate('jsonSchemaGeneratorWithNested', model.jsonSchemaGeneratorWithNested)
+  fastify.decorate('modelName', modelName)
   const prefix = model.definition.endpointBasePath
-
-  decorateCrud(fastify, model, modelName)
-
-  await fastify.register(httpInterface, { prefix, registerGetters: true, registerSetters: !isView })
-}
-
-async function registerViewCrud(fastify, { modelName }) {
-  if (!fastify.mongo) {
-    throw new Error('`fastify.mongo` is undefined!')
-  }
-  if (!modelName) {
-    throw new Error('`modelName` is undefined!')
-  }
-
-  fastify.log.trace({ modelName }, 'Registering View CRUD')
-
-  const { definition, viewDependencies } = fastify.models[modelName]
-  const prefix = definition.endpointBasePath
-
-  decorateCrud(fastify, viewDependencies, modelName)
-  await fastify.register(httpInterface, { prefix, registerGetters: false, registerSetters: true })
-}
-
-async function registerViewCrudLookup(fastify, { modelName, lookupModel }) {
-  if (!fastify.mongo) {
-    throw new Error('`fastify.mongo` is undefined!')
-  }
-
-  fastify.log.trace({ modelName }, 'Registering ViewLookup CRUD')
-
-  const {
-    as: modelField,
-  } = lookupModel.lookup
-
-  const { definition } = fastify.models[modelName]
-  const prefix = definition.endpointBasePath
-  const lookupPrefix = join(prefix, 'lookup', modelField)
-
-  decorateCrud(fastify, lookupModel, modelName)
-
-  fastify.decorate('lookupProjection', lookupModel.parsedLookupProjection)
-
-  await fastify.register(httpInterface, {
-    prefix: lookupPrefix,
-    registerGetters: false,
-    registerSetters: false,
-    registerLookup: true,
-  })
+  fastify.register(httpInterface, { prefix, isView })
 }
 
 const registerDatabase = fp(registerMongoInstances, { decorators: { fastify: ['config'] } })
 
 async function iterateOverCollectionDefinitionAndRegisterCruds(fastify) {
+  fastify.decorate('castCollectionId', castCollectionId(fastify))
   fastify.decorate('userIdHeaderKey', fastify.config.USER_ID_HEADER_KEY.toLowerCase())
 
   for (const [modelName, model] of Object.entries(fastify.models)) {
-    const { isView, viewLookupsEnabled, viewDependencies } = model
-    if (viewLookupsEnabled) {
-      await fastify.register(registerViewCrud, {
-        modelName,
-      })
-
-      for (const lookupModel of viewDependencies.lookupsModels) {
-        await fastify.register(registerViewCrudLookup, {
-          modelName,
-          lookupModel,
-        })
-      }
-    }
-
-    await fastify.register(registerCrud, {
+    fastify.register(registerCrud, {
       modelName,
-      isView,
+      isView: model.isView,
     })
   }
+}
+
+// eslint-disable-next-line max-statements
+async function loadModels(fastify) {
+  const { collections } = fastify
+  const views = fastify.views || []
+
+  const mergedCollections = mergeViewsInCollections(collections, views)
+
+  fastify.log.trace({ collectionNames: mergedCollections.map(coll => coll.name) }, 'Registering CRUDs and Views')
+
+  const models = {}
+  for (const collectionDefinition of mergedCollections) {
+    if (!collectionDefinition.schema && !compatibilityValidate(collectionDefinition)) {
+      fastify.log.warn({ collectionName: collectionDefinition.name }, 'collection using custom fields configuration - which has been deprecated')
+      fastify.log.error(compatibilityValidate.errors)
+      throw new Error(`Invalid collection definition: ${collectionDefinition.name}`)
+    }
+
+    if (collectionDefinition.schema && !validate(collectionDefinition)) {
+      fastify.log.error(validate.errors)
+      throw new Error(`Invalid collection definition: ${collectionDefinition.name}`)
+    }
+
+    const {
+      name: collectionName,
+      endpointBasePath: collectionEndpoint,
+      type: collectionType,
+      schema: collectionSchema,
+      fields: deprecatedCollectionSchema,
+      defaultState,
+      indexes,
+    } = collectionDefinition
+    const isView = collectionType === VIEW_TYPE
+
+    fastify.log.trace({ collectionEndpoint, collectionName }, 'Registering CRUD')
+    const collectionIdType = getIdType(collectionDefinition)
+    const collection = fastify.mongo[getDatabaseNameByType(collectionIdType)].db.collection(collectionName)
+
+    const allFieldNames = !collectionSchema
+      ? deprecatedCollectionSchema.map(({ name }) => name)
+      : Object.keys(collectionDefinition.schema.properties)
+    const pathsForRawSchema = generatePathFieldsForRawSchema(fastify.log, collectionDefinition)
+
+    // TODO: make this configurable
+    const crudService = new CrudService(
+      collection,
+      defaultState,
+      { allowDiskUse: fastify.config.ALLOW_DISK_USE_IN_QUERIES },
+    )
+    const queryParser = new QueryParser(collectionDefinition, pathsForRawSchema)
+    const resultCaster = new ResultCaster(collectionDefinition)
+    const jsonSchemaGenerator = new JSONSchemaGenerator(
+      collectionDefinition,
+      {},
+      fastify.config.CRUD_LIMIT_CONSTRAINT_ENABLED,
+      fastify.config.CRUD_MAX_LIMIT
+    )
+    const jsonSchemaGeneratorWithNested = new JSONSchemaGenerator(
+      collectionDefinition,
+      pathsForRawSchema,
+      fastify.config.CRUD_LIMIT_CONSTRAINT_ENABLED,
+      fastify.config.CRUD_MAX_LIMIT
+    )
+
+    if (isView) {
+      const existingCollectionCursor = await fastify.mongo[getDatabaseNameByType(collectionIdType)].db.listCollections(
+        {
+          name: collectionName,
+        },
+        {
+          nameOnly: true,
+        })
+      const retrievedCollection = await existingCollectionCursor.next()
+      if (retrievedCollection) {
+        try {
+          await fastify.mongo[getDatabaseNameByType(collectionIdType)].db.collection(collectionName).drop()
+        } catch (error) {
+          throw new Error('Failed to delete view', { cause: error })
+        }
+      }
+      try {
+        await fastify.mongo[getDatabaseNameByType(collectionIdType)].db.createCollection(
+          collectionName,
+          {
+            viewOn: collectionDefinition.source,
+            pipeline: collectionDefinition.pipeline,
+          }
+        )
+      } catch (error) {
+        throw new Error('Failed to create view', { cause: error })
+      }
+    } else {
+      await createIndexes(collection, indexes || [], PREFIX_OF_INDEX_NAMES_TO_PRESERVE)
+    }
+
+    models[getCollectionNameFromEndpoint(collectionEndpoint)] = {
+      definition: collectionDefinition,
+      crudService,
+      queryParser,
+      castResultsAsStream: () => resultCaster.asStream(),
+      castItem: (item) => resultCaster.castItem(item),
+      allFieldNames,
+      jsonSchemaGenerator,
+      jsonSchemaGeneratorWithNested,
+      isView,
+    }
+  }
+  fastify.decorate('models', models)
+}
+
+function getCollectionNameFromEndpoint(endpointBasePath) {
+  return endpointBasePath.replace('/', '').replace(/\//g, '-')
 }
 
 const validCrudFolder = path => !['.', '..'].includes(path) && /\.js(on)?$/.test(path)
 
-async function customErrorHandler(error, request, reply) {
-  if (error.statusCode === 404) {
-    return notFoundHandler(request, reply)
-  }
-
-  request.log.error({ cause: error?.validation ?? error }, 'invalid request received')
-
-  if (error.validation?.[0]?.message === 'must NOT have additional properties') {
-    reply.code(error.statusCode)
-    throw new Error(`${error.message}. Property "${error.validation[0].params.additionalProperty}" is not defined in validation schema`)
-  }
-
-  throw error
-}
-
-async function notFoundHandler(_, reply) {
-  reply
-    .code(404)
-    .send({
-      error: 'not found',
-    })
-}
-
-
 async function setupCruds(fastify) {
-  const {
-    COLLECTION_DEFINITION_FOLDER,
-    VIEWS_DEFINITION_FOLDER,
-    HELPERS_PREFIX,
-    ENABLE_STRICT_OUTPUT_VALIDATION,
-  } = fastify.config
-
-  fastify.decorate('validateOutput', ENABLE_STRICT_OUTPUT_VALIDATION)
-  fastify.setNotFoundHandler(notFoundHandler)
-  fastify.setErrorHandler(customErrorHandler)
-  const collections = readdirSync(COLLECTION_DEFINITION_FOLDER)
+  const collections = readdirSync(fastify.config.COLLECTION_DEFINITION_FOLDER)
     .filter(validCrudFolder)
-    .map(path => join(COLLECTION_DEFINITION_FOLDER, path))
+    .map(path => join(fastify.config.COLLECTION_DEFINITION_FOLDER, path))
     .map(require)
 
   fastify.decorate('collections', collections)
 
-  const viewsFolder = VIEWS_DEFINITION_FOLDER
+  const viewsFolder = fastify.config.VIEWS_DEFINITION_FOLDER
   if (viewsFolder) {
     const views = readdirSync(viewsFolder)
       .filter(validCrudFolder)
@@ -207,45 +221,18 @@ async function setupCruds(fastify) {
   }
 
   if (collections.length > 0) {
-    addSerializerCompiler(fastify, ajvSerializer, ENABLE_STRICT_OUTPUT_VALIDATION)
-
-    await fastify.register(registerDatabase)
-    await fastify.register(fp(loadModels))
-
-    await fastify.register(iterateOverCollectionDefinitionAndRegisterCruds)
-    await fastify.register(joinPlugin, { prefix: '/join' })
-    await fastify.register(registerHelperRoutes, { prefix: HELPERS_PREFIX })
-  } else {
-    fastify.log.warn('no collection definition provided')
+    fastify
+      .register(registerDatabase)
+      .register(fp(loadModels))
+      .register(iterateOverCollectionDefinitionAndRegisterCruds)
+      .register(joinPlugin, { prefix: '/join' })
   }
-
-  /** ===============================  HOOKS  ===============================  */
-  addLookupHook(fastify)
-  addPatchViewHook(fastify)
 }
 
-/* =============================================================================== */
-
 module.exports = async function plugin(fastify, opts) {
-  addHealthHooks(fastify)
-  addAclHook(fastify)
-  addPreHandlerHooks(fastify)
-
-  await fastify.register(fastifyEnv, { schema: fastifyEnvSchema, data: opts })
-  await fastify.register(fastifyMultipart, {
-    limits: {
-      fields: 5,
-      // Conversion Byte to Mb
-      fileSize: fastify.config.MAX_MULTIPART_FILE_BYTES * 1000000,
-      files: 1,
-    },
-  })
-
-  try {
-    await fastify.register(fp(setupCruds, { decorators: { fastify: ['config'] } }))
-  } catch (error) {
-    fastify.log.fatal({ cause: error }, 'failed to setup CRUD Service components')
-  }
+  fastify
+    .register(fastifyEnv, { schema: fastifyEnvSchema, data: opts })
+    .register(fp(setupCruds, { decorators: { fastify: ['config'] } }))
 }
 
 module.exports.options = {
@@ -258,10 +245,16 @@ module.exports.options = {
     },
     plugins: [ajvFormats],
   },
+  // configure Fastify v3 to use Ajv 8 (AjvCompiler v2.x => Ajv 8)
+  schemaController: {
+    compilersFactory: {
+      buildValidator: AjvCompiler(),
+    },
+  },
 }
 
 module.exports.swaggerDefinition = {
-  openApiSpecification: process.env.OPEN_API_SPECIFICATION ?? 'swagger',
+  openApiSpecification: 'swagger',
   info: {
     title: 'Crud Service',
     description: myPackage.description,
@@ -269,17 +262,7 @@ module.exports.swaggerDefinition = {
   },
 }
 
-module.exports.transformSchemaForSwagger = ({ schema, url } = {}) => {
-  // route with undefined schema will not be shown
-  if (!schema) {
-    return {
-      url,
-      schema: {
-        hide: true,
-      },
-    }
-  }
-
+module.exports.transformSchemaForSwagger = ({ schema, url }) => {
   const {
     params = undefined,
     body = undefined,
@@ -288,54 +271,21 @@ module.exports.transformSchemaForSwagger = ({ schema, url } = {}) => {
     ...others
   } = schema
   const transformed = { ...others }
+  const KEYS_TO_REMOVE = [
+    SCHEMA_CUSTOM_KEYWORDS.UNIQUE_OPERATION_ID,
+  ]
 
-  if (params) {
-    transformed.params = getTransformedSchema(params)
-  }
-  if (body) {
-    transformed.body = getTransformedSchema(body)
-  }
-  if (querystring) {
-    transformed.querystring = getTransformedSchema(querystring)
-  }
+  if (params) { transformed.params = omit(KEYS_TO_REMOVE, params) }
+  if (body) { transformed.body = omit(KEYS_TO_REMOVE, body) }
+  if (querystring) { transformed.querystring = omit(KEYS_TO_REMOVE, querystring) }
   if (response) {
     transformed.response = {
       ...response,
-      ...response['200'] ? { 200: getTransformedSchema(response['200']) } : {},
+      ...response['200'] ? { 200: omit(KEYS_TO_REMOVE, response['200']) } : {},
     }
   }
 
   return { schema: transformed, url }
-}
-
-function getTransformedSchema(httpPartSchema) {
-  if (!httpPartSchema) {
-    return
-  }
-  const KEYS_TO_UNSET = [
-    SCHEMA_CUSTOM_KEYWORDS.UNIQUE_OPERATION_ID,
-    ...JSONPath({
-      json: httpPartSchema,
-      resultType: 'pointer',
-      path: '$..[?(@ && @.type && Array.isArray(@.type))]',
-    })
-      .map(pointer => [
-        `${pointer
-          .slice(1)
-          .replace(pointerSeparator, '.')}.type`,
-        `${pointer
-          .slice(1)
-          .replace(pointerSeparator, '.')}.nullable`,
-      ])
-      .flat(),
-  ]
-
-  const response = httpPartSchema
-  KEYS_TO_UNSET.forEach(keyToUnset => {
-    lunset(response, `${keyToUnset}`)
-  })
-
-  return response
 }
 
 module.exports.getMetrics = function getMetrics(prometheusClient) {

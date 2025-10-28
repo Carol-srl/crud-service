@@ -19,9 +19,10 @@
 
 const tap = require('tap')
 const logger = require('pino')({ level: 'silent' })
-const { mockObjectId } = require('./utils')
+const { mockObjectId, mockUuidV4 } = require('./utils')
 
 mockObjectId()
+mockUuidV4()
 
 const collectionDefinitions = {
   books: require('./collectionDefinitions/books'),
@@ -34,14 +35,14 @@ const collectionDefinitions = {
 
 const Ajv = require('ajv')
 const ajvFormats = require('ajv-formats')
-const ajvKeywords = require('ajv-keywords')
 
 const JSONSchemaGenerator = require('../lib/JSONSchemaGenerator')
 const generatePathFieldsForRawSchema = require('../lib/generatePathFieldsForRawSchema')
+const { sortRegex } = require('../lib/JSONSchemaGenerator')
 const { SCHEMA_CUSTOM_KEYWORDS } = require('../lib/consts')
 
 const collections = Object.keys(collectionDefinitions)
-const operations = ['GetList', 'GetItem', 'Post', 'Delete', 'Count', 'Bulk', 'Patch', 'PatchBulk', 'ChangeState', 'ChangeStateMany', 'Export', 'GetListLookup']
+const operations = ['GetList', 'GetItem', 'Post', 'Delete', 'Count', 'Bulk', 'Patch', 'PatchBulk', 'ChangeState', 'ChangeStateMany', 'Export']
 
 const operationToMethod = operations.reduce((operationToMethod, op) => {
   operationToMethod[op] = `generate${op}JSONSchema`
@@ -51,10 +52,8 @@ const operationToMethod = operations.reduce((operationToMethod, op) => {
 const ajv = new Ajv({
   useDefaults: true,
   allowMatchingProperties: true,
-  allowUnionTypes: true,
 })
 ajvFormats(ajv)
-ajvKeywords(ajv)
 ajv.addVocabulary(Object.values(SCHEMA_CUSTOM_KEYWORDS))
 
 const expectedSchemas = operations.reduce((acc, operation) => {
@@ -246,24 +245,6 @@ tap.test('getlist response validation - not valid', t => {
   t.notOk(validate(invalidResponse))
 })
 
-tap.test('getitem response validation - generateRequired flag', t => {
-  t.plan(2)
-
-  const collection = 'books'
-  const generator = getJsonSchemaGenerator(collectionDefinitions[collection])
-  const response = {
-    name: 'Ulysses',
-    publishDate: '2018-02-06T00:00:00.000Z',
-  }
-  const schemaWithoutRequired = generator.generateGetItemJSONSchema()
-  const validateWithoutRequired = ajv.compile(schemaWithoutRequired.response['200'])
-  t.ok(validateWithoutRequired(response), 'without required response is ok')
-
-  const schemaWithRequired = generator.generateGetItemJSONSchema(true)
-  const validateWithRequired = ajv.compile(schemaWithRequired.response['200'])
-  t.notOk(validateWithRequired(response), 'with required response is not ok cause isbn is missing')
-})
-
 tap.test('RawObject - valid', t => {
   t.plan(1)
 
@@ -446,6 +427,36 @@ tap.test('GeoPoint validation', t => {
       }
     })
   }
+})
+
+tap.test('sortRegex must match the right expression', t => {
+  const collection = 'books'
+  const regex = new RegExp(sortRegex(collectionDefinitions[collection]))
+
+  const matchExp = [
+    'attachments',
+    'attachments,price',
+    '-attachments',
+    '-price',
+    'attachments,-price',
+    '-attachments,price',
+    'attachments.nested,price',
+    '-attachments.nested.subnested,price',
+    'attachments.nested.subnested,price.nested.subnested',
+  ]
+
+  const notMatchExp = [
+    'inexistent',
+    '-attachments..nested,price',
+    'attachments.,price',
+    'price,inexistent',
+    '',
+  ]
+
+  t.plan(matchExp.length + notMatchExp.length)
+
+  matchExp.forEach(expr => t.strictSame(regex.test(expr), true))
+  notMatchExp.forEach(expr => t.strictSame(regex.test(expr), false))
 })
 
 function getJsonSchemaGenerator(collection) {

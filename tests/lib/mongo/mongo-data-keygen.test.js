@@ -19,7 +19,7 @@
 const tap = require('tap')
 const path = require('path')
 const abstractLogger = require('abstract-logging')
-const mongodb = require('mongodb')
+const { MongoClient } = require('mongodb')
 
 const dataKeygen = require('../../../lib/mongo/mongo-data-keygen')
 
@@ -43,7 +43,7 @@ const clientEncryptionMock = class ClientEncryption {
 }
 
 tap.test('Data keygen tests', async t => {
-  const mongoClient = await mongodb.MongoClient.connect(mongoURL)
+  const mongoClient = await MongoClient.connect(mongoURL)
 
   t.beforeEach(async() => {
     try {
@@ -90,9 +90,8 @@ tap.test('Data keygen tests', async t => {
 
   t.test('Throws if error happen', async assert => {
     const collectionName = 'testCollection'
-    const dataKeygenMock = assert.mockRequire('../../../lib/mongo/mongo-data-keygen', {
-      'mongodb': {
-        ...mongodb,
+    const dataKeygenMock = assert.mock('../../../lib/mongo/mongo-data-keygen', {
+      'mongodb-client-encryption': {
         ClientEncryption: clientEncryptionMock,
       },
     })

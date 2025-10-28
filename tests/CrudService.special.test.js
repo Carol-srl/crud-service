@@ -28,12 +28,9 @@ const {
   getMongoDatabaseName,
   getMongoURL,
   BOOKS_COLLECTION_NAME,
-  defaultSorting,
-  fixtures,
-  getProjectionFromObject,
 } = require('./utils')
 
-const ALL_FIELDS = getProjectionFromObject(publicFixtures[0])
+const ALL_FIELDS = Object.keys(publicFixtures[0])
 
 const [firstPublicFixture] = publicFixtures
 const OBJECT_ID = firstPublicFixture._id
@@ -43,7 +40,6 @@ const context = {
   userId: 'my-user-id',
   now: new Date('2018-02-08'),
 }
-const DEFAULT_PROJECTION = { _id: 1 }
 
 tap.test('allowDiskUse', async t => {
   const databaseName = getMongoDatabaseName()
@@ -77,10 +73,10 @@ tap.test('allowDiskUse', async t => {
       return
     }
 
-    const crudService = new CrudService(collection, STATES.PUBLIC, null, { allowDiskUse: true })
+    const crudService = new CrudService(collection, STATES.PUBLIC, { allowDiskUse: true })
 
     t.test('in findAll', async t => {
-      await crudService.findAll(context, { price: { $gt: 20 } }, DEFAULT_PROJECTION).toArray()
+      await crudService.findAll(context, { price: { $gt: 20 } }).toArray()
       t.strictSame(commandFailedEvents, [])
       t.match(commandStartedEvents, [{ commandName: 'find', command: { allowDiskUse: true } }])
     })
@@ -104,7 +100,7 @@ tap.test('allowDiskUse', async t => {
       return
     }
 
-    const crudService = new CrudService(collection, STATES.PUBLIC, null, { allowDiskUse: false })
+    const crudService = new CrudService(collection, STATES.PUBLIC, { allowDiskUse: false })
 
     t.test('in findAll', async t => {
       await crudService.findAll(context, { price: { $gt: 20 } }, ALL_FIELDS).toArray()
@@ -144,41 +140,6 @@ tap.test('allowDiskUse', async t => {
       await crudService.count(context)
       t.strictSame(commandFailedEvents, [])
       t.strictSame(commandStartedEvents[0].command.allowDiskUse, undefined)
-    })
-  })
-
-  t.test('defaultSorting', async t => {
-    const crudService = new CrudService(collection, STATES.PUBLIC, defaultSorting)
-    t.plan(2)
-
-    const getSortedFixtures = (compareFn) => fixtures
-      .filter((document) => document.__STATE__ === STATES.PUBLIC)
-      .sort(compareFn)
-      .map(({ _id }) => ({ _id }))
-
-    const defaultAscendendFixtures = getSortedFixtures((a, b) => a.name.localeCompare(b.name))
-    t.test('if isn\'t defined, defaultSorting is applied', async t => {
-      const result = await crudService.findAll(context, {}, DEFAULT_PROJECTION).toArray()
-      t.strictSame(
-        result,
-        defaultAscendendFixtures
-      )
-    })
-
-    t.test('if sort is defined, defaultSorting is not applied', async t => {
-      const sort = {
-        price: 1,
-      }
-      const ascendedFixturesByPrice = getSortedFixtures((a, b) => a.price - b.price)
-
-      t.notSame(ascendedFixturesByPrice, defaultAscendendFixtures)
-
-      const result = await crudService.findAll(context, {}, DEFAULT_PROJECTION, sort).toArray()
-
-      t.strictSame(
-        result,
-        ascendedFixturesByPrice
-      )
     })
   })
 })
