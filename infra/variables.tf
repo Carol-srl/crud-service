@@ -1,8 +1,18 @@
+variable "ENV" {
+  description = "(lowercase) deployment environment (e.g., dev, staging, prod)"
+  type        = string
+}
 
 variable "image" {
   description = "Docker image URL for the Carol Nest service"
   type        = string
-  default     = "972096737302.dkr.ecr.eu-west-3.amazonaws.com/carol/crud-service:6.5.0"
+  default     = "972096737302.dkr.ecr.eu-west-3.amazonaws.com/carol/crud-service"
+}
+
+variable "image_tag" {
+  description = "Docker image tag for the Crud service"
+  type        = string
+  default     = "6.5.0"
 }
 
 variable "port" {
@@ -44,10 +54,6 @@ variable "CRUD_MAX_LIMIT" {
   default = 200
 }
 
-variable "ENV" {
-  description = "(lowercase) deployment environment (e.g., dev, staging, prod)"
-  type        = string
-}
 
 variable "LOG_LEVEL" {
   type = map(string)
