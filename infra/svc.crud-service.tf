@@ -1,11 +1,11 @@
 resource "aws_ecs_task_definition" "this" {
-    family                   = "crud-service"
-    execution_role_arn       = data.terraform_remote_state.main_infra.outputs.ecs_task_execution_role_arn
-    network_mode             = "awsvpc"
-    requires_compatibilities = ["FARGATE"]
-    cpu                      = var.fargate_cpu
-    memory                   = var.fargate_memory
-    container_definitions = jsonencode([
+  family                   = "crud-service"
+  execution_role_arn       = data.terraform_remote_state.main_infra.outputs.ecs_task_execution_role_arn
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = var.fargate_cpu
+  memory                   = var.fargate_memory
+  container_definitions = jsonencode([
     {
       name      = "crud-service"
       image     = var.image
@@ -18,11 +18,14 @@ resource "aws_ecs_task_definition" "this" {
         }
       ]
 
+      secrets = [
+        { name = "MONGODB_URL", valueFrom = data.aws_secretsmanager_secret.mongodb_url_metadata.arn },
+      ]
+
       environment = [
-        { name = "ENV", value = var.env },
+        { name = "ENV", value = var.SERVICE_ENV[var.ENV] },
         { name = "HTTP_PORT", value = tostring(var.port) },
-        { name = "MONGODB_URL", value = var.MONGODB_URL },
-        { name = "LOG_LEVEL", value = var.log_level },
+        { name = "LOG_LEVEL", value = var.LOG_LEVEL[var.ENV] },
         { name = "COLLECTION_DEFINITION_FOLDER", value = var.COLLECTION_DEFINITION_FOLDER },
         { name = "VIEWS_DEFINITION_FOLDER", value = var.VIEWS_DEFINITION_FOLDER },
         { name = "USER_ID_HEADER_KEY", value = var.USER_ID_HEADER_KEY },
@@ -43,16 +46,16 @@ resource "aws_ecs_task_definition" "this" {
 }
 
 resource "aws_ecs_service" "this" {
-    name            = "crud-service"
-    cluster         = data.terraform_remote_state.main_infra.outputs.ecs_cluster_id
-    task_definition = aws_ecs_task_definition.this.arn
-    desired_count   = var.task_count
-    launch_type     = "FARGATE"
+  name            = "crud-service"
+  cluster         = data.terraform_remote_state.main_infra.outputs.ecs_cluster_id
+  task_definition = aws_ecs_task_definition.this.arn
+  desired_count   = var.task_count
+  launch_type     = "FARGATE"
 
-    network_configuration {
-      subnets          = data.terraform_remote_state.main_infra.outputs.private_subnets
-      assign_public_ip = false
-      security_groups  = [data.terraform_remote_state.main_infra.outputs.ecs_security_group_id]
-    }
+  network_configuration {
+    subnets          = data.terraform_remote_state.main_infra.outputs.private_subnets
+    assign_public_ip = false
+    security_groups  = [data.terraform_remote_state.main_infra.outputs.ecs_security_group_id]
+  }
 
 }
