@@ -31,7 +31,7 @@ variable "VIEWS_DEFINITION_FOLDER" {
 
 variable "USER_ID_HEADER_KEY" {
   type    = string
-  default = "miauserid"
+  default = "userid"
 }
 
 variable "CRUD_LIMIT_CONSTRAINT_ENABLED" {
