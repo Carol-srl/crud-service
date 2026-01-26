@@ -128,7 +128,13 @@
     },
     {
       "name": "customerJoinedAt",
-      "type": "boolean",
+      "type": "Date",
+      "required": false,
+      "nullable": true
+    },
+    {
+      "name": "viitStartedAt",
+      "type": "Date",
       "required": false,
       "nullable": true
     }
