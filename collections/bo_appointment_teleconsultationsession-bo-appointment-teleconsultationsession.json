@@ -133,7 +133,7 @@
       "nullable": true
     },
     {
-      "name": "viitStartedAt",
+      "name": "visitStartedAt",
       "type": "Date",
       "required": false,
       "nullable": true
