@@ -1,0 +1,215 @@
+{
+  "id": "self_assessments_files",
+  "description": "View of appointments",
+  "name": "self_assessments_files",
+  "fields": [
+    {
+      "name": "_id",
+      "description": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "creatorId",
+      "description": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "createdAt",
+      "description": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "updaterId",
+      "description": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "updatedAt",
+      "description": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "__STATE__",
+      "description": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "customerId",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "problem",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "doctor",
+      "type": "RawObject",
+      "required": false,
+      "nullable": false,
+      "schema": {
+        "properties": {
+          "_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "profileImageUrl": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "firstName",
+          "lastName"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "familyMemberId",
+      "type": "ObjectId",
+      "required": false,
+      "nullable": true
+    },
+    {
+      "name": "uploadDate",
+      "type": "Date",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "files",
+      "type": "Array",
+      "required": true,
+      "nullable": false,
+      "items": {
+        "type": "RawObject",
+        "schema": {
+          "properties": {
+            "storage": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            },
+            "size": {
+              "type": "integer"
+            },
+            "type": {
+              "type": "string"
+            },
+            "originalName": {
+              "type": "string"
+            },
+            "hash": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "storage",
+            "name",
+            "url",
+            "size",
+            "type",
+            "originalName",
+            "hash"
+          ]
+        }
+      }
+    }
+  ],
+  "endpointBasePath": "/self-assessments-files",
+  "defaultState": "PUBLIC",
+  "type": "view",
+  "source": "appointments",
+  "pipeline": [
+    {
+      "$lookup": {
+        "from": "self_assessments",
+        "localField": "formDataId",
+        "foreignField": "_id",
+        "as": "selfAssessment"
+      }
+    },
+    {
+      "$unwind": "$selfAssessment"
+    },
+    {
+      "$match": {
+        "selfAssessment.data.containerLocation.file": {
+          "$exists": true,
+          "$ne": []
+        }
+      }
+    },
+    {
+      "$lookup": {
+        "from": "users",
+        "localField": "doctorId",
+        "foreignField": "authUserId",
+        "as": "doctor"
+      }
+    },
+    {
+      "$unwind": "$doctor"
+    },
+    {
+      "$project": {
+        "_id": "$formDataId",
+        "customerId": "$customerId",
+        "files": {
+          "$map": {
+            "input": "$selfAssessment.data.containerLocation.file",
+            "as": "file",
+            "in": "$$file"
+          }
+        },
+        "doctor": {
+          "_id": "$doctor._id",
+          "firstName": "$doctor.firstName",
+          "lastName": "$doctor.lastName",
+          "profileImageUrl": {
+            "$cond": [
+              {
+                "$eq": [
+                  "$doctor.profileImage",
+                  null
+                ]
+              },
+              null,
+              "$doctor.profileImage.location"
+            ]
+          }
+        },
+        "problem": 1,
+        "uploadDate": "$createdAt",
+        "familyMemberId": 1,
+        "__STATE__": "$selfAssessment.__STATE__"
+      }
+    }
+  ]
+}

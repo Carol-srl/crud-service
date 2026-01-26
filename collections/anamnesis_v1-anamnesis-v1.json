@@ -1,0 +1,106 @@
+{
+  "id": "anamnesis_v1",
+  "description": "View of anamnesis",
+  "name": "anamnesis_v1",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "formSchemaId",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "data",
+      "type": "RawObject",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "customerId",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "touched",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "file",
+      "type": "RawObject",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "formSchemaVersion",
+      "type": "number",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "required": false,
+      "nullable": false,
+      "description": "Status of the anamnesis survey: pending, in_progress, done"
+    }
+  ],
+  "endpointBasePath": "/anamnesis-v1",
+  "defaultState": "PUBLIC",
+  "type": "view",
+  "source": "anamnesis",
+  "pipeline": [
+    {
+      "$match": {
+        "__STATE__": "PUBLIC",
+        "formSchemaVersion": {
+          "$ne": 2
+        }
+      }
+    }
+  ]
+}

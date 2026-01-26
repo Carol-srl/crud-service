@@ -1,0 +1,105 @@
+{
+  "id": "user_consents",
+  "description": "Collection of user_consents",
+  "name": "user_consents",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "termsCondition",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "privacy",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "marketing",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "userId",
+      "type": "ObjectId",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "profiling",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    }
+  ],
+  "endpointBasePath": "/user-consents",
+  "defaultState": "PUBLIC",
+  "indexes": [
+    {
+      "name": "_id",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "_id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "createdAt",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "createdAt",
+          "order": -1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,187 @@
+{
+  "id": "problem_types",
+  "description": "Collection of problem_types",
+  "name": "problem_types",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "deprecated. use localizedProblemType or problemType key"
+    },
+    {
+      "name": "formSchemaId",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "depracated, use localizedFormSchemaId"
+    },
+    {
+      "name": "group",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "sortingPolicy",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "iconName",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "slotAllocation",
+      "type": "number",
+      "required": false,
+      "nullable": false,
+      "description": "Indica quanti slot temporali richiede il relativo problem type"
+    },
+    {
+      "name": "visibleTo",
+      "type": "Array",
+      "required": false,
+      "nullable": false,
+      "items": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "uniqueId",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "problemType",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "generic name for the problem, can be used to translate the problem name"
+    },
+    {
+      "name": "localizedFormSchemaId",
+      "type": "RawObject",
+      "required": true,
+      "nullable": false,
+      "description": "formSchema to use for different languages",
+      "schema": {
+        "properties": {
+          "it": {
+            "type": "string"
+          },
+          "en": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "it",
+          "en"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "localizedProblemName",
+      "type": "RawObject",
+      "required": true,
+      "nullable": false,
+      "description": "string to display as problem name",
+      "schema": {
+        "properties": {
+          "it": {
+            "type": "string"
+          },
+          "en": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "it",
+          "en"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "formSchemaIdNewBackend",
+      "type": "ObjectId",
+      "required": false,
+      "nullable": false,
+      "description": "formSchemaId for new backend forms"
+    }
+  ],
+  "endpointBasePath": "/problem-types",
+  "defaultState": "PUBLIC",
+  "indexes": [
+    {
+      "name": "_id",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "_id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "createdAt",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "createdAt",
+          "order": -1
+        }
+      ]
+    }
+  ]
+}

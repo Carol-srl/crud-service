@@ -1,0 +1,129 @@
+{
+  "id": "card_tokens",
+  "description": "Collection of card_tokens",
+  "name": "card_tokens",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "userId",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "isDefault",
+      "type": "boolean",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "issuerCountry",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "company",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "productType",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "token",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "tokenExpiryMonth",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "tokenExpiryYear",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "is3ds",
+      "type": "boolean",
+      "required": true,
+      "nullable": false
+    }
+  ],
+  "endpointBasePath": "/card-tokens",
+  "defaultState": "PUBLIC",
+  "indexes": [
+    {
+      "name": "_id",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "_id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "createdAt",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "createdAt",
+          "order": -1
+        }
+      ]
+    }
+  ]
+}

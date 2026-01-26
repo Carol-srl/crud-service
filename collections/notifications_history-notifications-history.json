@@ -1,0 +1,141 @@
+{
+  "id": "notifications_history",
+  "description": "Collection of notifications_history",
+  "name": "notifications_history",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "type",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "recipientName",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "recipientEmail",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "executionDate",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "jobName",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "response",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "messageId",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "pushRead",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "pushReceipt",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "companyCode",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    }
+  ],
+  "endpointBasePath": "/notifications-history",
+  "defaultState": "PUBLIC",
+  "indexes": [
+    {
+      "name": "_id",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "_id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "createdAt",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "createdAt",
+          "order": -1
+        }
+      ]
+    }
+  ]
+}

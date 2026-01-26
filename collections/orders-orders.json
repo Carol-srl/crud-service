@@ -1,0 +1,252 @@
+{
+  "id": "orders",
+  "description": "Collection of orders",
+  "name": "orders",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "userId",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "productId",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "productName",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "price",
+      "type": "number",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "billingModelId",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "formDataId",
+      "type": "ObjectId",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "sagaId",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "skipped",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "invoice",
+      "type": "RawObject",
+      "required": false,
+      "nullable": false,
+      "schema": {
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "date": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "version",
+      "type": "number",
+      "required": false,
+      "nullable": false
+    }
+  ],
+  "endpointBasePath": "/orders",
+  "defaultState": "PUBLIC",
+  "indexes": [
+    {
+      "name": "_id",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "_id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "createdAt",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "createdAt",
+          "order": -1
+        }
+      ]
+    },
+    {
+      "name": "formDataId",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "formDataId",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "stateAndId",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "__STATE__",
+          "order": 1
+        },
+        {
+          "name": "id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "productAndUser",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "productId",
+          "order": 1
+        },
+        {
+          "name": "userId",
+          "order": 1
+        },
+        {
+          "name": "__STATE__",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "userIdAndCreation",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "userId",
+          "order": 1
+        },
+        {
+          "name": "__STATE__",
+          "order": 1
+        },
+        {
+          "name": "createdAt",
+          "order": -1
+        }
+      ]
+    },
+    {
+      "name": "userIdAndInvoice",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "userId",
+          "order": 1
+        },
+        {
+          "name": "__STATE__",
+          "order": 1
+        },
+        {
+          "name": "invoice.id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "sagaId",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "sagaId",
+          "order": 1
+        }
+      ]
+    }
+  ]
+}

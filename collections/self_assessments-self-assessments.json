@@ -1,0 +1,130 @@
+{
+  "id": "self_assessments",
+  "description": "Collection of self_assessments",
+  "name": "self_assessments",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "data",
+      "type": "RawObject",
+      "required": true,
+      "nullable": false,
+      "schema": {
+        "properties": {
+          "containerLocation": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "file": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "formSchemaId",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "version",
+      "type": "number",
+      "required": false,
+      "nullable": false
+    }
+  ],
+  "endpointBasePath": "/self-assessments",
+  "defaultState": "PUBLIC",
+  "indexes": [
+    {
+      "name": "_id",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "_id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "createdAt",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "createdAt",
+          "order": -1
+        }
+      ]
+    },
+    {
+      "name": "state",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "__STATE__",
+          "order": 1
+        }
+      ]
+    }
+  ]
+}

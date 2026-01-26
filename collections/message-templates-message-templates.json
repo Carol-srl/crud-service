@@ -1,0 +1,123 @@
+{
+  "id": "message-templates",
+  "description": "Collection of message-templates",
+  "name": "message-templates",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "emailTitle",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "smsMessage",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "emailHtmlMessage",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "type",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "pushTitle",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "pushSubtitle",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "pushMessage",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    }
+  ],
+  "endpointBasePath": "/message-templates",
+  "defaultState": "PUBLIC",
+  "indexes": [
+    {
+      "name": "_id",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "_id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "createdAt",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "createdAt",
+          "order": -1
+        }
+      ]
+    }
+  ]
+}

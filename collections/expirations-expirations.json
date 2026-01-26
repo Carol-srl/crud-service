@@ -1,0 +1,117 @@
+{
+  "id": "expirations",
+  "description": "Collection of expirations",
+  "name": "expirations",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "startDate",
+      "type": "Date",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "expirationIntervalMs",
+      "type": "number",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "applicantService",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "outputMode",
+      "type": "RawObject",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "expirationDate",
+      "type": "Date",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "expirationStatus",
+      "type": "RawObject",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "payload",
+      "type": "RawObject",
+      "required": true,
+      "nullable": false
+    }
+  ],
+  "endpointBasePath": "/expirations",
+  "defaultState": "PUBLIC",
+  "indexes": [
+    {
+      "name": "_id",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "_id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "createdAt",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "createdAt",
+          "order": -1
+        }
+      ]
+    }
+  ]
+}

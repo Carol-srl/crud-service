@@ -1,0 +1,205 @@
+{
+  "id": "medicilio_stats",
+  "description": "View of medicilio_transactions",
+  "name": "medicilio_stats",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "year",
+      "type": "number",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "month",
+      "type": "number",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "created",
+      "type": "number",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "pending",
+      "type": "number",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "completed",
+      "type": "number",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "available",
+      "type": "number",
+      "required": false,
+      "nullable": false
+    }
+  ],
+  "endpointBasePath": "/medicilio-stats",
+  "defaultState": "PUBLIC",
+  "type": "view",
+  "source": "prescriptions",
+  "pipeline": [
+    {
+      "$match": {
+        "isBookable": true
+      }
+    },
+    {
+      "$lookup": {
+        "from": "medicilio_transactions",
+        "localField": "_id",
+        "foreignField": "prescriptionId",
+        "as": "transaction"
+      }
+    },
+    {
+      "$unwind": {
+        "path": "$transaction",
+        "preserveNullAndEmptyArrays": true
+      }
+    },
+    {
+      "$project": {
+        "year": {
+          "$year": "$createdAt"
+        },
+        "month": {
+          "$month": "$createdAt"
+        },
+        "created": {
+          "$cond": [
+            {
+              "$eq": [
+                "$transaction.status",
+                "CREATED"
+              ]
+            },
+            1,
+            0
+          ]
+        },
+        "pending": {
+          "$cond": [
+            {
+              "$eq": [
+                "$transaction.status",
+                "PENDING"
+              ]
+            },
+            1,
+            0
+          ]
+        },
+        "completed": {
+          "$cond": [
+            {
+              "$eq": [
+                "$transaction.status",
+                "COMPLETED"
+              ]
+            },
+            1,
+            0
+          ]
+        },
+        "available": {
+          "$cond": [
+            {
+              "$ifNull": [
+                "$transaction",
+                false
+              ]
+            },
+            0,
+            1
+          ]
+        }
+      }
+    },
+    {
+      "$group": {
+        "_id": {
+          "year": "$year",
+          "month": "$month"
+        },
+        "available": {
+          "$sum": "$available"
+        },
+        "created": {
+          "$sum": "$created"
+        },
+        "pending": {
+          "$sum": "$pending"
+        },
+        "completed": {
+          "$sum": "$completed"
+        }
+      }
+    },
+    {
+      "$project": {
+        "__STATE__": "PUBLIC",
+        "year": "$_id.year",
+        "month": "$_id.month",
+        "available": 1,
+        "created": 1,
+        "pending": 1,
+        "completed": 1
+      }
+    },
+    {
+      "$sort": {
+        "year": -1,
+        "month": -1
+      }
+    }
+  ]
+}

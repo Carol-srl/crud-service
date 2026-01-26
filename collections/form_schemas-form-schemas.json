@@ -1,0 +1,160 @@
+{
+  "id": "form_schemas",
+  "description": "Collection of form_schemas",
+  "name": "form_schemas",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "formSchema",
+      "type": "RawObject",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "formSubmitUrl",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "isEditable",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "isPrivate",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "enabledUserGroups",
+      "type": "Array",
+      "required": false,
+      "nullable": false,
+      "items": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "isVisible",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "styleAssetIds",
+      "type": "Array",
+      "required": false,
+      "nullable": false,
+      "items": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "formVisualizerOptions",
+      "type": "RawObject",
+      "required": false,
+      "nullable": false,
+      "description": "Custom options for forms (eg. translations)"
+    },
+    {
+      "name": "pdfTemplateId",
+      "type": "ObjectId",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "version",
+      "type": "number",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "oldId",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "type",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    }
+  ],
+  "endpointBasePath": "/form-schemas",
+  "defaultState": "PUBLIC",
+  "indexes": [
+    {
+      "name": "_id",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "_id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "createdAt",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "createdAt",
+          "order": -1
+        }
+      ]
+    }
+  ]
+}

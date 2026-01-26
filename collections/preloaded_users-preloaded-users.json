@@ -1,0 +1,195 @@
+{
+  "id": "preloaded_users",
+  "description": "Collection of preloaded_users",
+  "name": "preloaded_users",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "email",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "fiscalCode",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "companyCode",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "notificationDate",
+      "type": "Date",
+      "required": false,
+      "nullable": false,
+      "description": "The timestamp of the notification email that a preloaded user receive when POST /notify-preloaded-users is called"
+    },
+    {
+      "name": "isNotified",
+      "type": "boolean",
+      "required": false,
+      "nullable": false,
+      "description": "True when notification email that a preloaded user receive when POST /notify-preloaded-users is called correctly"
+    },
+    {
+      "name": "emailHash",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "verificationId",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "subCompany",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "signUpDate",
+      "type": "Date",
+      "required": false,
+      "nullable": false,
+      "description": "Date of the user actual sign-up"
+    },
+    {
+      "name": "signUpUserId",
+      "type": "ObjectId",
+      "required": false,
+      "nullable": false,
+      "description": "user ID of the actual signed-up user"
+    }
+  ],
+  "endpointBasePath": "/preloaded-users",
+  "defaultState": "PUBLIC",
+  "indexes": [
+    {
+      "name": "_id",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "_id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "createdAt",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "createdAt",
+          "order": -1
+        },
+        {
+          "name": "isNotified",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "email",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "email",
+          "order": 1
+        },
+        {
+          "name": "emailHash",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "verificationId",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "verificationId",
+          "order": 1
+        },
+        {
+          "name": "createdAt",
+          "order": -1
+        }
+      ]
+    },
+    {
+      "name": "state",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "__STATE__",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "isNotified",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "isNotified",
+          "order": 1
+        }
+      ]
+    }
+  ]
+}

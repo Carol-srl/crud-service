@@ -1,0 +1,266 @@
+{
+  "id": "chat_files",
+  "description": "View of files uploaded in chats",
+  "name": "chat_files",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "files",
+      "type": "Array",
+      "required": true,
+      "nullable": false,
+      "items": {
+        "type": "RawObject",
+        "schema": {
+          "properties": {
+            "storage": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            },
+            "size": {
+              "type": "integer"
+            },
+            "type": {
+              "type": "string"
+            },
+            "originalName": {
+              "type": "string"
+            },
+            "hash": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "storage",
+            "name",
+            "url",
+            "size",
+            "type",
+            "originalName",
+            "hash"
+          ]
+        }
+      }
+    },
+    {
+      "name": "familyMemberId",
+      "type": "ObjectId",
+      "required": false,
+      "nullable": true
+    },
+    {
+      "name": "uploadDate",
+      "type": "Date",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "problem",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "customerId",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "doctor",
+      "type": "RawObject",
+      "required": false,
+      "nullable": false,
+      "schema": {
+        "properties": {
+          "_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          },
+          "authUserId": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "profileImageUrl": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "firstName",
+          "lastName"
+        ],
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "kind",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "_doctorId",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "This field has been added only to work around the problem that it is not possible to filter on a field of type objectId within an object."
+    }
+  ],
+  "endpointBasePath": "/chat-files",
+  "defaultState": "PUBLIC",
+  "type": "view",
+  "source": "self_assessments",
+  "pipeline": [
+    {
+      "$match": {
+        "data.containerLocation.file": {
+          "$exists": true,
+          "$ne": []
+        }
+      }
+    },
+    {
+      "$lookup": {
+        "from": "orders",
+        "localField": "_id",
+        "foreignField": "formDataId",
+        "as": "order"
+      }
+    },
+    {
+      "$unwind": "$order"
+    },
+    {
+      "$match": {
+        "order.status": "FINALIZED"
+      }
+    },
+    {
+      "$lookup": {
+        "from": "order_saga",
+        "localField": "order.sagaId",
+        "foreignField": "sagaId",
+        "as": "orderSaga"
+      }
+    },
+    {
+      "$unwind": "$orderSaga"
+    },
+    {
+      "$match": {
+        "orderSaga.metadata.chatId": {
+          "$exists": "true"
+        }
+      }
+    },
+    {
+      "$addFields": {
+        "problemTypeId": {
+          "$toObjectId": "$orderSaga.metadata.problemTypeId"
+        },
+        "doctorId": {
+          "$toObjectId": "$orderSaga.metadata.doctorId"
+        }
+      }
+    },
+    {
+      "$lookup": {
+        "from": "problem_types",
+        "localField": "problemTypeId",
+        "foreignField": "_id",
+        "as": "problemType"
+      }
+    },
+    {
+      "$unwind": "$problemType"
+    },
+    {
+      "$lookup": {
+        "from": "users",
+        "localField": "doctorId",
+        "foreignField": "_id",
+        "as": "doctor"
+      }
+    },
+    {
+      "$unwind": "$doctor"
+    },
+    {
+      "$project": {
+        "_id": 1,
+        "__STATE__": 1,
+        "customerId": "$orderSaga.metadata.authUserId",
+        "familyMemberId": "$orderSaga.metadata.familyMemberId",
+        "problem": "$problemType.name",
+        "_doctorId": "$doctor._id",
+        "doctor": {
+          "_id": "$doctor._id",
+          "authUserId": "$doctor.authUserId",
+          "firstName": "$doctor.firstName",
+          "lastName": "$doctor.lastName"
+        },
+        "files": {
+          "$map": {
+            "input": "$data.containerLocation.file",
+            "as": "file",
+            "in": "$$file"
+          }
+        },
+        "uploadDate": "$createdAt",
+        "kind": "Chat con il tuo medico"
+      }
+    }
+  ]
+}

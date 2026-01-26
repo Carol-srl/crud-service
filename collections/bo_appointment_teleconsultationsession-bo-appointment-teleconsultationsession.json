@@ -1,0 +1,182 @@
+{
+  "id": "bo-appointment-teleconsultationsession",
+  "description": "View of teleconsultations",
+  "name": "bo_appointment_teleconsultationsession",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "Status"
+    },
+    {
+      "name": "doctorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "doctorId"
+    },
+    {
+      "name": "customerId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "customerId"
+    },
+    {
+      "name": "problem",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "isEmergency",
+      "type": "boolean",
+      "required": false,
+      "nullable": true
+    },
+    {
+      "name": "orderId",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "startDate",
+      "type": "Date",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "endDate",
+      "type": "Date",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "service",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "visitStartedByDoctor",
+      "type": "boolean",
+      "required": false,
+      "nullable": true
+    },
+    {
+      "name": "visitEndedByDoctor",
+      "type": "boolean",
+      "required": false,
+      "nullable": true
+    },
+    {
+      "name": "noShow",
+      "type": "boolean",
+      "required": false,
+      "nullable": true
+    },
+    {
+      "name": "customerJoinedAt",
+      "type": "boolean",
+      "required": false,
+      "nullable": true
+    }
+  ],
+  "endpointBasePath": "/bo-appointment-teleconsultationsession",
+  "defaultState": "PUBLIC",
+  "type": "view",
+  "source": "appointments",
+  "pipeline": [
+    {
+      "$lookup": {
+        "from": "teleconsultation_sessions",
+        "localField": "_id",
+        "foreignField": "appointmentId",
+        "as": "teleconsultation_session"
+      }
+    },
+    {
+      "$unwind": "$teleconsultation_session"
+    },
+    {
+      "$match": {
+        "__STATE__": "PUBLIC"
+      }
+    },
+    {
+      "$project": {
+        "_id": 1,
+        "__STATE__": 1,
+        "creatorId": 1,
+        "createdAt": 1,
+        "updatedAt": 1,
+        "updaterId": 1,
+        "startDate": 1,
+        "endDate": 1,
+        "status": 1,
+        "customerId": 1,
+        "doctorId": 1,
+        "isEmergency": 1,
+        "orderId": 1,
+        "problem": 1,
+        "title": 1,
+        "service": 1,
+        "visitStartedByDoctor": "$teleconsultation_session.visitStartedByDoctor",
+        "visitEndedByDoctor": "$teleconsultation_session.visitEndedByDoctor",
+        "noShow": "$teleconsultation_session.noShow",
+        "customerJoinedAt": "$teleconsultation_session.customerJoinedAt"
+      }
+    }
+  ]
+}

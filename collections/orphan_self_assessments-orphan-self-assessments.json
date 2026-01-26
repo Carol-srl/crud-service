@@ -1,0 +1,87 @@
+{
+  "id": "orphan_self_assessments",
+  "description": "View of orphan self_assessments",
+  "name": "orphan_self_assessments",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "data",
+      "type": "RawObject",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "formSchemaId",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false
+    }
+  ],
+  "endpointBasePath": "/orphan-self-assessments",
+  "defaultState": "PUBLIC",
+  "type": "view",
+  "source": "self_assessments",
+  "pipeline": [
+    {
+      "$lookup": {
+        "from": "orders",
+        "localField": "_id",
+        "foreignField": "formDataId",
+        "as": "orders"
+      }
+    },
+    {
+      "$match": {
+        "orders": {
+          "$eq": []
+        }
+      }
+    },
+    {
+      "$project": {
+        "orders": 0
+      }
+    }
+  ]
+}

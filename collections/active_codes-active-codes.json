@@ -1,0 +1,195 @@
+{
+  "id": "active_codes",
+  "description": "Collection of active_codes",
+  "name": "active_codes",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "code",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "companyId",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "includedServices",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "depreceated, use localizedIncluedServiceArrayKey"
+    },
+    {
+      "name": "excludedServices",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "isInsurance",
+      "type": "boolean",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "templateId",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "allowedRelatives",
+      "type": "Array",
+      "required": false,
+      "nullable": true,
+      "description": "define which kinTypes are allowed",
+      "items": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "successPageName",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "isFamilyAndFriends",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "verificationField",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "familyLimit_son",
+      "type": "number",
+      "required": false,
+      "nullable": true,
+      "description": "limite familiari (figli)"
+    },
+    {
+      "name": "familyLimit_spouse",
+      "type": "number",
+      "required": false,
+      "nullable": true,
+      "description": "limite numero familiari (coniuge/convivente)"
+    },
+    {
+      "name": "familyLimit_parent",
+      "type": "number",
+      "required": false,
+      "nullable": true,
+      "description": "limite numero familiari (genitori)"
+    },
+    {
+      "name": "familyLimit_total",
+      "type": "number",
+      "required": false,
+      "nullable": true,
+      "description": "limite numero familiari TOTALE"
+    },
+    {
+      "name": "localizedIncludedServiceArrayKey",
+      "type": "Array",
+      "required": true,
+      "nullable": false,
+      "description": "list of included service keys",
+      "items": {
+        "type": "string"
+      }
+    }
+  ],
+  "endpointBasePath": "/active-codes",
+  "defaultState": "PUBLIC",
+  "indexes": [
+    {
+      "name": "_id",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "_id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "createdAt",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "createdAt",
+          "order": -1
+        }
+      ]
+    },
+    {
+      "name": "code",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "code",
+          "order": 1
+        }
+      ]
+    }
+  ]
+}

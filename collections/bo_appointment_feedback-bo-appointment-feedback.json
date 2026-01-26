@@ -1,0 +1,147 @@
+{
+  "id": "bo_appointment_feedback",
+  "description": "View of feedback",
+  "name": "bo_appointment_feedback",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "rating",
+      "type": "number",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "negativeAreas",
+      "type": "Array",
+      "required": false,
+      "nullable": false,
+      "items": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "positiveAreas",
+      "type": "Array",
+      "required": false,
+      "nullable": false,
+      "items": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "orderId",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "appointmentId",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "problem",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "isEmergency",
+      "type": "boolean",
+      "required": false,
+      "nullable": true
+    }
+  ],
+  "endpointBasePath": "/bo-appointment-feedback",
+  "defaultState": "PUBLIC",
+  "type": "view",
+  "source": "feedback",
+  "pipeline": [
+    {
+      "$lookup": {
+        "from": "orders",
+        "localField": "orderId",
+        "foreignField": "_id",
+        "as": "order"
+      }
+    },
+    {
+      "$unwind": "$order"
+    },
+    {
+      "$lookup": {
+        "from": "appointments",
+        "localField": "order.id",
+        "foreignField": "orderId",
+        "as": "appointment"
+      }
+    },
+    {
+      "$unwind": "$appointment"
+    },
+    {
+      "$match": {
+        "appointment.__STATE__": "PUBLIC"
+      }
+    },
+    {
+      "$project": {
+        "_id": 1,
+        "__STATE__": 1,
+        "creatorId": 1,
+        "createdAt": 1,
+        "updatedAt": 1,
+        "updaterId": 1,
+        "rating": 1,
+        "negativeAreas": 1,
+        "positiveAreas": 1,
+        "appointmentId": "$appointment._id",
+        "problem": "$appointment.problem",
+        "isEmergency": "$appointment.isEmergency",
+        "orderId": "$order._id"
+      }
+    }
+  ]
+}

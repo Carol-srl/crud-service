@@ -1,0 +1,270 @@
+{
+  "id": "reports",
+  "description": "Collection of reports",
+  "name": "reports",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "formSchemaId",
+      "type": "ObjectId",
+      "required": false,
+      "nullable": false,
+      "description": "the id of the form schema in the form_schemas CRUD"
+    },
+    {
+      "name": "data",
+      "type": "RawObject",
+      "required": false,
+      "nullable": false,
+      "description": "the data object used to save data from the form visualizer",
+      "schema": {
+        "properties": {
+          "diagnosis": {
+            "type": "string"
+          },
+          "objectiveExamination": {
+            "type": "string"
+          },
+          "anamnesiAlimentare": {
+            "type": "string"
+          },
+          "conclusions": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "customerId",
+      "type": "string",
+      "required": false,
+      "nullable": false,
+      "description": "auth0 user id of the customer of the report: stored in the beneficiaries CRUD"
+    },
+    {
+      "name": "touched",
+      "type": "boolean",
+      "required": false,
+      "nullable": false,
+      "description": "true when the customer send or download a document"
+    },
+    {
+      "name": "closed",
+      "type": "boolean",
+      "required": false,
+      "nullable": false,
+      "description": "when a doctor closes a report it can not be edited anymore in the form service"
+    },
+    {
+      "name": "file",
+      "type": "RawObject",
+      "required": false,
+      "nullable": false,
+      "description": "file with the signed file report uploaded by a doctor after the report is closed",
+      "schema": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "file": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "location": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "visitTypeId",
+      "type": "ObjectId",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "uuid",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "doctorId",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "visitReason",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "visitType",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "date",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "familyMemberId",
+      "type": "ObjectId",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "isSlotChat",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "isRead",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "service",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "originalFile",
+      "type": "RawObject",
+      "required": false,
+      "nullable": false,
+      "description": "The file before the digital signature",
+      "schema": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "file": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "location": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  ],
+  "endpointBasePath": "/reports",
+  "defaultState": "PUBLIC",
+  "indexes": [
+    {
+      "name": "_id",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "_id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "createdAt",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "createdAt",
+          "order": -1
+        }
+      ]
+    },
+    {
+      "name": "customerIdAndClosed",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "customerId",
+          "order": 1
+        },
+        {
+          "name": "closed",
+          "order": 1
+        },
+        {
+          "name": "__STATE__",
+          "order": 1
+        },
+        {
+          "name": "isRead",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "doctorIdAndDate",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "doctorId",
+          "order": 1
+        },
+        {
+          "name": "date",
+          "order": -1
+        }
+      ]
+    }
+  ]
+}

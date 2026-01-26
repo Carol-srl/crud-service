@@ -1,0 +1,114 @@
+{
+  "id": "medicilio_performances",
+  "description": "Collection of medicilio_performances",
+  "name": "medicilio_performances",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "nameMedicilio",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "nameCarol",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "price",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "priceStartFrom",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "geoPolygonIds",
+      "type": "Array",
+      "required": true,
+      "nullable": false,
+      "items": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "isCustom",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    }
+  ],
+  "endpointBasePath": "/medicilio-performances",
+  "defaultState": "PUBLIC",
+  "indexes": [
+    {
+      "name": "_id",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "_id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "createdAt",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "createdAt",
+          "order": -1
+        }
+      ]
+    }
+  ]
+}

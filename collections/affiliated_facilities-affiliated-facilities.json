@@ -1,0 +1,206 @@
+{
+  "id": "affiliated_facilities",
+  "description": "Collection of affiliated_facilities",
+  "name": "affiliated_facilities",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "facilityName",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "region",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "province",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "city",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "address",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "postalCode",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "phone",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "site",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "discount",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "note",
+      "type": "string",
+      "required": false,
+      "nullable": false,
+      "description": "deprecated use noteTranslationKey"
+    },
+    {
+      "name": "category",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "location",
+      "type": "GeoPoint",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "oneCheckEnabled",
+      "type": "boolean",
+      "required": false,
+      "nullable": false,
+      "description": "Flag which enables the one-check online reservation integration for the facility"
+    },
+    {
+      "name": "noteTranslationKey",
+      "type": "string",
+      "required": false,
+      "nullable": false,
+      "description": "key to use to retrive the string to show as note"
+    }
+  ],
+  "endpointBasePath": "/affiliated-facilities",
+  "defaultState": "PUBLIC",
+  "indexes": [
+    {
+      "name": "_id",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "_id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "createdAt",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "createdAt",
+          "order": -1
+        }
+      ]
+    },
+    {
+      "name": "location",
+      "type": "geo",
+      "unique": false,
+      "field": "location"
+    },
+    {
+      "name": "categoryAndName",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "category",
+          "order": 1
+        },
+        {
+          "name": "facilityName",
+          "order": 1
+        },
+        {
+          "name": "__STATE__",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "categoryAndCity",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "category",
+          "order": 1
+        },
+        {
+          "name": "city",
+          "order": 1
+        },
+        {
+          "name": "__STATE__",
+          "order": 1
+        }
+      ]
+    }
+  ]
+}

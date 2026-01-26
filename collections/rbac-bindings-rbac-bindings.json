@@ -1,0 +1,140 @@
+{
+  "id": "rbac-bindings",
+  "description": "Collection rbac-bindings created by RBAC Manager plugin for bindings management",
+  "name": "rbac-bindings",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "bindingId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "binding unique identifier "
+    },
+    {
+      "name": "groups",
+      "type": "Array",
+      "required": false,
+      "nullable": false,
+      "description": "list of user groups subject to this binding",
+      "items": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "subjects",
+      "type": "Array",
+      "required": false,
+      "nullable": false,
+      "description": "list of subjects of the binding",
+      "items": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "roles",
+      "type": "Array",
+      "required": false,
+      "nullable": false,
+      "description": "list of roles identifiers that subjects will inherit from the binding",
+      "items": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "permissions",
+      "type": "Array",
+      "required": false,
+      "nullable": false,
+      "description": "list of specific permissions that will be inherited by the subjects of the bindings",
+      "items": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "resource",
+      "type": "RawObject",
+      "required": false,
+      "nullable": false,
+      "description": "resource on which the role permissions are evaluated from the binding"
+    }
+  ],
+  "endpointBasePath": "/rbac-bindings",
+  "defaultState": "PUBLIC",
+  "indexes": [
+    {
+      "name": "_id",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "_id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "createdAt",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "createdAt",
+          "order": -1
+        }
+      ]
+    },
+    {
+      "name": "uniqueBindingId",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "bindingId",
+          "order": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,266 @@
+{
+  "id": "family_members",
+  "description": "Collection of family_members",
+  "name": "family_members",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "masterUserId",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "profileImage",
+      "type": "RawObject",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "kinType",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "fullName",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "fiscalCode",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "gender",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "birthDate",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "isDependent",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "idDocs",
+      "type": "Array",
+      "required": false,
+      "nullable": false,
+      "items": {
+        "type": "RawObject"
+      }
+    },
+    {
+      "name": "email",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "birthNation",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "residenceAddress",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "residenceCity",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "residenceZipCode",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "pediatricianId",
+      "type": "ObjectId",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "familyCode",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "firstName",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "lastName",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "domicile",
+      "type": "RawObject",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "birthCity",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "firstVisitDone",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "firstVisitBooked",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "psychologicalInfo",
+      "type": "RawObject",
+      "required": false,
+      "nullable": false,
+      "schema": {
+        "properties": {
+          "firstVisit": {
+            "type": "object",
+            "properties": {
+              "booked": {
+                "type": "boolean"
+              },
+              "done": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "signUpDate",
+      "type": "Date",
+      "required": false,
+      "nullable": false,
+      "description": "Date of the user actual sign-up"
+    },
+    {
+      "name": "signUpUserId",
+      "type": "ObjectId",
+      "required": false,
+      "nullable": false,
+      "description": "user ID of the actual signed-up user"
+    },
+    {
+      "name": "obstetricInfo",
+      "type": "RawObject",
+      "required": false,
+      "nullable": false,
+      "schema": {
+        "properties": {
+          "firstVisit": {
+            "type": "object",
+            "properties": {
+              "booked": {
+                "type": "boolean"
+              },
+              "done": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "endpointBasePath": "/family-members",
+  "defaultState": "PUBLIC",
+  "indexes": [
+    {
+      "name": "_id",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "_id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "createdAt",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "createdAt",
+          "order": -1
+        }
+      ]
+    }
+  ]
+}

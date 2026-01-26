@@ -1,0 +1,151 @@
+{
+  "id": "prices",
+  "description": "Collection of prices",
+  "name": "prices",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "productId",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "price",
+      "type": "number",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "billingModelId",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "companyCode",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "includedQuantity",
+      "type": "number",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "overUsePrice",
+      "type": "number",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "isTrial",
+      "type": "boolean",
+      "required": false,
+      "nullable": false,
+      "description": "This field is used to indicate whether the product is active in trial mode or in full mode"
+    },
+    {
+      "name": "starterQuantity",
+      "type": "number",
+      "required": false,
+      "nullable": true,
+      "description": "The quantity expected as a starter for a certain product. The product will have the price in the starterPrice field until the quantities defined in this field are exhausted."
+    },
+    {
+      "name": "starterPrice",
+      "type": "number",
+      "required": false,
+      "nullable": true,
+      "description": "The price that the product will have until the quantities defined in the starterQuantity field run out."
+    }
+  ],
+  "endpointBasePath": "/prices",
+  "defaultState": "PUBLIC",
+  "indexes": [
+    {
+      "name": "_id",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "_id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "createdAt",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "createdAt",
+          "order": -1
+        }
+      ]
+    },
+    {
+      "name": "combination",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "billingModelId",
+          "order": 1
+        },
+        {
+          "name": "productId",
+          "order": 1
+        },
+        {
+          "name": "companyCode",
+          "order": 1
+        }
+      ]
+    }
+  ]
+}

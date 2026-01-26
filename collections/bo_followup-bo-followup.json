@@ -1,0 +1,379 @@
+{
+  "id": "bo_followup",
+  "description": "View of followups",
+  "name": "bo_followup",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "user",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "familyMember",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "doctor",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "date",
+      "type": "Date",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "response",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "problemName",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "productName",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "file",
+      "type": "RawObject",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "customerId",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "eventDate",
+      "type": "Date",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "orderId",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "responseDate",
+      "type": "Date",
+      "required": false,
+      "nullable": false
+    }
+  ],
+  "endpointBasePath": "/bo-followup",
+  "defaultState": "PUBLIC",
+  "type": "view",
+  "source": "followups",
+  "pipeline": [
+    {
+      "$lookup": {
+        "from": "orders",
+        "localField": "orderId",
+        "foreignField": "_id",
+        "as": "order"
+      }
+    },
+    {
+      "$unwind": {
+        "path": "$order",
+        "preserveNullAndEmptyArrays": true
+      }
+    },
+    {
+      "$lookup": {
+        "from": "users",
+        "localField": "userId",
+        "foreignField": "_id",
+        "as": "user"
+      }
+    },
+    {
+      "$unwind": {
+        "path": "$user",
+        "preserveNullAndEmptyArrays": true
+      }
+    },
+    {
+      "$lookup": {
+        "from": "family_members",
+        "localField": "familyMemberId",
+        "foreignField": "_id",
+        "as": "familyMember"
+      }
+    },
+    {
+      "$unwind": {
+        "path": "$familyMember",
+        "preserveNullAndEmptyArrays": true
+      }
+    },
+    {
+      "$lookup": {
+        "from": "appointments",
+        "localField": "appointmentId",
+        "foreignField": "_id",
+        "as": "appointment"
+      }
+    },
+    {
+      "$unwind": {
+        "path": "$appointment",
+        "preserveNullAndEmptyArrays": true
+      }
+    },
+    {
+      "$addFields": {
+        "reportId": {
+          "$toObjectId": "$appointment.reportId"
+        }
+      }
+    },
+    {
+      "$lookup": {
+        "from": "reports",
+        "localField": "reportId",
+        "foreignField": "_id",
+        "as": "report"
+      }
+    },
+    {
+      "$unwind": {
+        "path": "$report",
+        "preserveNullAndEmptyArrays": true
+      }
+    },
+    {
+      "$lookup": {
+        "from": "prescriptions",
+        "localField": "prescriptionId",
+        "foreignField": "_id",
+        "as": "prescription"
+      }
+    },
+    {
+      "$unwind": {
+        "path": "$prescription",
+        "preserveNullAndEmptyArrays": true
+      }
+    },
+    {
+      "$addFields": {
+        "doctorId": {
+          "$toObjectId": "$user.doctorId"
+        }
+      }
+    },
+    {
+      "$lookup": {
+        "from": "users",
+        "localField": "creatorId",
+        "foreignField": "authUserId",
+        "as": "doctor"
+      }
+    },
+    {
+      "$unwind": "$doctor"
+    },
+    {
+      "$project": {
+        "_id": 1,
+        "__STATE__": 1,
+        "creatorId": 1,
+        "createdAt": 1,
+        "updatedAt": 1,
+        "updaterId": 1,
+        "appointmentId": 1,
+        "orderId": 1,
+        "prescriptionId": 1,
+        "responseDate": 1,
+        "customerId": "$user.authUserId",
+        "file": {
+          "$cond": [
+            {
+              "$eq": [
+                "$order.productId",
+                "PR"
+              ]
+            },
+            "$prescription.approvedPrescriptionFileData",
+            "$report.file"
+          ]
+        },
+        "user": {
+          "$concat": [
+            "$user.firstName",
+            " ",
+            "$user.lastName"
+          ]
+        },
+        "familyMember": {
+          "$concat": [
+            "$family.fullName",
+            " ",
+            "$family.fiscalCode"
+          ]
+        },
+        "productName": "$order.productName",
+        "orderCreationDate": "$order.createdAt",
+        "eventDate": {
+          "$cond": [
+            {
+              "$eq": [
+                "$order.productId",
+                "PR"
+              ]
+            },
+            "$prescription.requestDate",
+            "$appointment.startDate"
+          ]
+        },
+        "problemName": "$appointment.problem",
+        "date": 1,
+        "response": {
+          "$switch": {
+            "branches": [
+              {
+                "case": {
+                  "$eq": [
+                    "$response",
+                    "better"
+                  ]
+                },
+                "then": "Meglio"
+              },
+              {
+                "case": {
+                  "$eq": [
+                    "$response",
+                    "muchBetter"
+                  ]
+                },
+                "then": "Molto meglio"
+              },
+              {
+                "case": {
+                  "$eq": [
+                    "$response",
+                    "worse"
+                  ]
+                },
+                "then": "Peggio"
+              },
+              {
+                "case": {
+                  "$eq": [
+                    "$response",
+                    "same"
+                  ]
+                },
+                "then": "Come prima"
+              },
+              {
+                "case": {
+                  "$eq": [
+                    "$response",
+                    "didNotStart"
+                  ]
+                },
+                "then": "Non ho iniziato la terapia"
+              },
+              {
+                "case": {
+                  "$eq": [
+                    "$response",
+                    "hadProblems"
+                  ]
+                },
+                "then": "Ho avuto problemi"
+              },
+              {
+                "case": {
+                  "$eq": [
+                    "$response",
+                    "allGood"
+                  ]
+                },
+                "then": "Tutto bene"
+              },
+              {
+                "case": {
+                  "$eq": [
+                    "$response",
+                    "expired"
+                  ]
+                },
+                "then": "Scaduto"
+              }
+            ],
+            "default": "$response"
+          }
+        },
+        "doctor": {
+          "$concat": [
+            "$doctor.firstName",
+            " ",
+            "$doctor.lastName"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,472 @@
+{
+  "id": "appointments",
+  "description": "Collection of appointments",
+  "name": "appointments",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "startDate",
+      "type": "Date",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "endDate",
+      "type": "Date",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "prescriptionId",
+      "type": "ObjectId",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "orderId",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "isRemote",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "customerId",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "ownerId",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "doctorId",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "linkTeleconsultation",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "problem",
+      "type": "string",
+      "required": false,
+      "nullable": false,
+      "description": "medical problem defining the reason for the appointment"
+    },
+    {
+      "name": "notes",
+      "type": "string",
+      "required": false,
+      "nullable": false,
+      "description": "Section filled after the visit by the doctor"
+    },
+    {
+      "name": "formDataId",
+      "type": "ObjectId",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "availableForFirstVisit",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "reportId",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "familyMemberId",
+      "type": "ObjectId",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "doctorAvailable",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "visitEnded",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "isEmergency",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "availabilityId",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "isFlagged",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "lockExpiration",
+      "type": "Date",
+      "required": false,
+      "nullable": true
+    },
+    {
+      "name": "reminderMilliseconds",
+      "type": "number",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "reminderIds",
+      "type": "Array",
+      "required": false,
+      "nullable": false,
+      "items": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "channels",
+      "type": "Array",
+      "required": false,
+      "nullable": false,
+      "items": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "slotId",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "isSlotChat",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "dependentSlots",
+      "type": "Array",
+      "required": false,
+      "nullable": false,
+      "items": {
+        "type": "RawObject"
+      }
+    },
+    {
+      "name": "chooseDoctorRule",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "problemTypeImage",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "problemTypeId",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "service",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "problemTypeIds",
+      "type": "Array",
+      "required": false,
+      "nullable": false,
+      "items": {
+        "type": "string"
+      }
+    }
+  ],
+  "endpointBasePath": "/appointments",
+  "defaultState": "PUBLIC",
+  "indexes": [
+    {
+      "name": "_id",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "_id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "createdAt",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "createdAt",
+          "order": -1
+        }
+      ]
+    },
+    {
+      "name": "orderId",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "orderId",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "problemTypeIndex",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "problemTypeId",
+          "order": 1
+        },
+        {
+          "name": "__STATE__",
+          "order": 1
+        },
+        {
+          "name": "visitEnded",
+          "order": 1
+        },
+        {
+          "name": "startDate",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "availabilityIndex",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "availabilityId",
+          "order": 1
+        },
+        {
+          "name": "__STATE__",
+          "order": 1
+        },
+        {
+          "name": "endDate",
+          "order": 1
+        },
+        {
+          "name": "ownerId",
+          "order": 1
+        },
+        {
+          "name": "startDate",
+          "order": 1
+        },
+        {
+          "name": "status",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "doctorIdAndStatus",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "doctorId",
+          "order": 1
+        },
+        {
+          "name": "status",
+          "order": 1
+        },
+        {
+          "name": "startDate",
+          "order": -1
+        }
+      ]
+    },
+    {
+      "name": "statusAndDates",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "status",
+          "order": 1
+        },
+        {
+          "name": "__STATE__",
+          "order": 1
+        },
+        {
+          "name": "startDate",
+          "order": 1
+        },
+        {
+          "name": "endDate",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "statusDatesAndLockExpiration",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "status",
+          "order": 1
+        },
+        {
+          "name": "__STATE__",
+          "order": 1
+        },
+        {
+          "name": "endDate",
+          "order": 1
+        },
+        {
+          "name": "startDate",
+          "order": 1
+        },
+        {
+          "name": "lockExpiration",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "statusDatesAndCustomerId",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "status",
+          "order": 1
+        },
+        {
+          "name": "startDate",
+          "order": 1
+        },
+        {
+          "name": "endDate",
+          "order": 1
+        },
+        {
+          "name": "customerId",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "customerId",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "customerId",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "status",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "status",
+          "order": 1
+        }
+      ]
+    }
+  ]
+}

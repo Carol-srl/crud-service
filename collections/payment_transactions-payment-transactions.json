@@ -1,0 +1,199 @@
+{
+  "id": "payment_transactions",
+  "description": "Collection of payment_transactions",
+  "name": "payment_transactions",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "orderId",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "result",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "resultDescription",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "paymentID",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "redirectToUrl",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "providerName",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "paymentType",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "isSuccessful",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "shopTransactionID",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "amount",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "sagaId",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "expiresOn",
+      "type": "string",
+      "required": false,
+      "nullable": false,
+      "description": "string decribing the expiration date in format YYYY-MM-DD, as defined by pgm, to define the end of the recurrence"
+    },
+    {
+      "name": "installmentFrequencyInDays",
+      "type": "number",
+      "required": false,
+      "nullable": false,
+      "description": "Minimu number of days in between subsequent merchant initiated transactions, needed by the PGM to support recurrency"
+    },
+    {
+      "name": "isFirstInstallment",
+      "type": "boolean",
+      "required": false,
+      "nullable": false,
+      "description": "boolean value defininf if the transaction is the very first transaction of the recurrent payments "
+    },
+    {
+      "name": "cardId",
+      "type": "ObjectId",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "payPalToken",
+      "type": "string",
+      "required": false,
+      "nullable": false,
+      "description": ""
+    },
+    {
+      "name": "productId",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "previousPaymentID",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "recurrenceToken",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "methodToken",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    }
+  ],
+  "endpointBasePath": "/payment-transactions",
+  "defaultState": "PUBLIC",
+  "indexes": [
+    {
+      "name": "_id",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "_id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "createdAt",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "createdAt",
+          "order": -1
+        }
+      ]
+    }
+  ]
+}

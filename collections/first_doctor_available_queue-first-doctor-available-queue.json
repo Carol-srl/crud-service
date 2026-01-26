@@ -1,0 +1,136 @@
+{
+  "id": "first_doctor_available_queue",
+  "description": "Collection of first_doctor_available_queue",
+  "name": "first_doctor_available_queue",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "slotId",
+      "type": "ObjectId",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "sagaId",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "isPediatricEmergency",
+      "type": "boolean",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "userId",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "doctorPickedAt",
+      "type": "Date",
+      "required": false,
+      "nullable": false,
+      "description": "Date indicating the time when the doctor was picked by the service"
+    },
+    {
+      "name": "familyMemberId",
+      "type": "ObjectId",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "problem",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "orderId",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "doctorFound",
+      "type": "boolean",
+      "required": false,
+      "nullable": true
+    }
+  ],
+  "endpointBasePath": "/first-doctor-available-queue",
+  "defaultState": "PUBLIC",
+  "indexes": [
+    {
+      "name": "_id",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "_id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "createdAt",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "createdAt",
+          "order": -1
+        }
+      ]
+    }
+  ]
+}

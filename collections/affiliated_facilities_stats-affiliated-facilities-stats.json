@@ -1,0 +1,443 @@
+{
+  "id": "affiliated_facilities_stats",
+  "description": "View of affiliated_facilities_transactions",
+  "name": "affiliated_facilities_stats",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "month",
+      "type": "number",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "year",
+      "type": "number",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "created",
+      "type": "RawObject",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "pending",
+      "type": "RawObject",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "completed",
+      "type": "RawObject",
+      "required": true,
+      "nullable": false
+    }
+  ],
+  "endpointBasePath": "/affiliated-facilities-stats",
+  "defaultState": "PUBLIC",
+  "type": "view",
+  "source": "affiliated_facilities_transactions",
+  "pipeline": [
+    {
+      "$match": {
+        "__STATE__": "PUBLIC"
+      }
+    },
+    {
+      "$lookup": {
+        "from": "prescriptions",
+        "localField": "prescriptionId",
+        "foreignField": "_id",
+        "as": "prescriptionData"
+      }
+    },
+    {
+      "$unwind": {
+        "path": "$prescriptionData",
+        "preserveNullAndEmptyArrays": true
+      }
+    },
+    {
+      "$project": {
+        "year": {
+          "$year": "$createdAt"
+        },
+        "month": {
+          "$month": "$createdAt"
+        },
+        "created": {
+          "$cond": [
+            {
+              "$eq": [
+                "$status",
+                "CREATED"
+              ]
+            },
+            1,
+            0
+          ]
+        },
+        "pending": {
+          "$cond": [
+            {
+              "$eq": [
+                "$status",
+                "PENDING"
+              ]
+            },
+            1,
+            0
+          ]
+        },
+        "completed": {
+          "$cond": [
+            {
+              "$eq": [
+                "$status",
+                "COMPLETED"
+              ]
+            },
+            1,
+            0
+          ]
+        },
+        "createdVisit": {
+          "$cond": [
+            {
+              "$and": [
+                {
+                  "$eq": [
+                    "$status",
+                    "CREATED"
+                  ]
+                },
+                {
+                  "$eq": [
+                    "$prescriptionData.prescriptionType",
+                    "visit"
+                  ]
+                }
+              ]
+            },
+            1,
+            0
+          ]
+        },
+        "createdLabExm": {
+          "$cond": [
+            {
+              "$and": [
+                {
+                  "$eq": [
+                    "$status",
+                    "CREATED"
+                  ]
+                },
+                {
+                  "$eq": [
+                    "$prescriptionData.prescriptionType",
+                    "labExam"
+                  ]
+                }
+              ]
+            },
+            1,
+            0
+          ]
+        },
+        "createdDiagnosticExam": {
+          "$cond": [
+            {
+              "$and": [
+                {
+                  "$eq": [
+                    "$status",
+                    "CREATED"
+                  ]
+                },
+                {
+                  "$eq": [
+                    "$prescriptionData.prescriptionType",
+                    "diagnosticExam"
+                  ]
+                }
+              ]
+            },
+            1,
+            0
+          ]
+        },
+        "pendingVisit": {
+          "$cond": [
+            {
+              "$and": [
+                {
+                  "$eq": [
+                    "$status",
+                    "PENDING"
+                  ]
+                },
+                {
+                  "$eq": [
+                    "$prescriptionData.prescriptionType",
+                    "visit"
+                  ]
+                }
+              ]
+            },
+            1,
+            0
+          ]
+        },
+        "pendingLabExm": {
+          "$cond": [
+            {
+              "$and": [
+                {
+                  "$eq": [
+                    "$status",
+                    "PENDING"
+                  ]
+                },
+                {
+                  "$eq": [
+                    "$prescriptionData.prescriptionType",
+                    "labExam"
+                  ]
+                }
+              ]
+            },
+            1,
+            0
+          ]
+        },
+        "pendingDiagnosticExam": {
+          "$cond": [
+            {
+              "$and": [
+                {
+                  "$eq": [
+                    "$status",
+                    "PENDING"
+                  ]
+                },
+                {
+                  "$eq": [
+                    "$prescriptionData.prescriptionType",
+                    "diagnosticExam"
+                  ]
+                }
+              ]
+            },
+            1,
+            0
+          ]
+        },
+        "completedVisit": {
+          "$cond": [
+            {
+              "$and": [
+                {
+                  "$eq": [
+                    "$status",
+                    "COMPLETED"
+                  ]
+                },
+                {
+                  "$eq": [
+                    "$prescriptionData.prescriptionType",
+                    "visit"
+                  ]
+                }
+              ]
+            },
+            1,
+            0
+          ]
+        },
+        "completedLabExm": {
+          "$cond": [
+            {
+              "$and": [
+                {
+                  "$eq": [
+                    "$status",
+                    "COMPLETED"
+                  ]
+                },
+                {
+                  "$eq": [
+                    "$prescriptionData.prescriptionType",
+                    "labExam"
+                  ]
+                }
+              ]
+            },
+            1,
+            0
+          ]
+        },
+        "completedDiagnosticExam": {
+          "$cond": [
+            {
+              "$and": [
+                {
+                  "$eq": [
+                    "$status",
+                    "COMPLETED"
+                  ]
+                },
+                {
+                  "$eq": [
+                    "$prescriptionData.prescriptionType",
+                    "diagnosticExam"
+                  ]
+                }
+              ]
+            },
+            1,
+            0
+          ]
+        },
+        "other": {
+          "$cond": [
+            {
+              "$in": [
+                "$status",
+                [
+                  "CREATED",
+                  "PENDING",
+                  "COMPLETED"
+                ]
+              ]
+            },
+            0,
+            1
+          ]
+        }
+      }
+    },
+    {
+      "$group": {
+        "_id": {
+          "year": "$year",
+          "month": "$month"
+        },
+        "created": {
+          "$sum": "$created"
+        },
+        "pending": {
+          "$sum": "$pending"
+        },
+        "completed": {
+          "$sum": "$completed"
+        },
+        "createdVisit": {
+          "$sum": "$createdVisit"
+        },
+        "createdLabExm": {
+          "$sum": "$createdLabExm"
+        },
+        "createdDiagnosticExam": {
+          "$sum": "$createdDiagnosticExam"
+        },
+        "pendingVisit": {
+          "$sum": "$pendingVisit"
+        },
+        "pendingLabExm": {
+          "$sum": "$pendingLabExm"
+        },
+        "pendingDiagnosticExam": {
+          "$sum": "$pendingDiagnosticExam"
+        },
+        "completedVisit": {
+          "$sum": "$completedVisit"
+        },
+        "completedLabExm": {
+          "$sum": "$completedLabExm"
+        },
+        "completedDiagnosticExam": {
+          "$sum": "$completedDiagnosticExam"
+        },
+        "other": {
+          "$sum": "$other"
+        }
+      }
+    },
+    {
+      "$project": {
+        "__STATE__": "PUBLIC",
+        "year": "$_id.year",
+        "month": "$_id.month",
+        "created": {
+          "all": "$created",
+          "visit": "$createdVisit",
+          "labExam": "$createdLabExm",
+          "diagnosticExam": "$createdDiagnosticExam"
+        },
+        "pending": {
+          "all": "$pending",
+          "visit": "$pendingVisit",
+          "labExam": "$pendingLabExm",
+          "diagnosticExam": "$pendingDiagnosticExam"
+        },
+        "completed": {
+          "all": "$completed",
+          "visit": "$completedVisit",
+          "labExam": "$completedLabExm",
+          "diagnosticExam": "$completedDiagnosticExam"
+        },
+        "other": 1
+      }
+    },
+    {
+      "$sort": {
+        "year": -1,
+        "month": -1
+      }
+    }
+  ]
+}

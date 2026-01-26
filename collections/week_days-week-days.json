@@ -1,0 +1,104 @@
+{
+  "id": "week_days",
+  "description": "Collection of week_days",
+  "name": "week_days",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "index",
+      "type": "number",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "each",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    }
+  ],
+  "endpointBasePath": "/week-days",
+  "defaultState": "PUBLIC",
+  "indexes": [
+    {
+      "name": "_id",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "_id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "createdAt",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "createdAt",
+          "order": -1
+        }
+      ]
+    },
+    {
+      "name": "index",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "index",
+          "order": 1
+        }
+      ]
+    }
+  ]
+}

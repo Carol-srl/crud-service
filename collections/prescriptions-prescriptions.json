@@ -1,0 +1,471 @@
+{
+  "id": "prescriptions",
+  "description": "Collection of prescriptions",
+  "name": "prescriptions",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "prescribingDoctorId",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "prescriptionType",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "I tipi di prescrizione ammessi sono “drugs”, “diagnosticExam”, “visit”e “labExam”."
+    },
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "expirationDate",
+      "type": "Date",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "userId",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "familyMemberId",
+      "type": "ObjectId",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "notes",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "requestDate",
+      "type": "Date",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "approvedPrescriptionFileData",
+      "type": "RawObject",
+      "required": false,
+      "nullable": false,
+      "schema": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "file": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "location": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "providerOrderId",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "requestedItems",
+      "type": "Array",
+      "required": false,
+      "nullable": false,
+      "items": {
+        "type": "RawObject"
+      }
+    },
+    {
+      "name": "approvedItems",
+      "type": "Array",
+      "required": false,
+      "nullable": false,
+      "items": {
+        "type": "RawObject",
+        "schema": {
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "_id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "price": {
+              "type": "number"
+            },
+            "imageUrl": {
+              "type": "string"
+            },
+            "quantity": {
+              "type": "number"
+            },
+            "isPainTherapy": {
+              "type": "boolean"
+            },
+            "dosage": {
+              "type": "string"
+            },
+            "repeatabilityCount": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "customerPrescriptionFileData",
+      "type": "RawObject",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "requestsHistory",
+      "type": "Array",
+      "required": false,
+      "nullable": false,
+      "items": {
+        "type": "RawObject",
+        "schema": {
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "prescriptionType": {
+              "type": "string"
+            },
+            "prescribingDoctorId": {
+              "type": "string"
+            },
+            "userId": {
+              "type": "string"
+            },
+            "familyMemberId": {
+              "type": "string"
+            },
+            "requestDate": {
+              "type": "string"
+            },
+            "notes": {
+              "type": "string"
+            },
+            "customerPrescriptionFileData": {
+              "type": "string"
+            },
+            "approvedItems": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "_id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "price": {
+                    "type": "number"
+                  },
+                  "imageUrl": {
+                    "type": "string"
+                  },
+                  "quantity": {
+                    "type": "number"
+                  },
+                  "isPainTherapy": {
+                    "type": "boolean"
+                  },
+                  "dosage": {
+                    "type": "string"
+                  },
+                  "repeatabilityCount": {
+                    "type": "number"
+                  }
+                },
+                "additionalProperties": true
+              }
+            },
+            "requestedItems": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "expirationDate": {
+              "type": "string"
+            },
+            "approvedPrescriptionFileData": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string"
+                },
+                "size": {
+                  "type": "number"
+                },
+                "location": {
+                  "type": "string"
+                }
+              }
+            },
+            "status": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": true
+        }
+      }
+    },
+    {
+      "name": "chatChannelId",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "sla",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "isBookable",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "bookingInfo",
+      "type": "RawObject",
+      "required": false,
+      "nullable": false,
+      "schema": {
+        "properties": {
+          "price": {
+            "type": "string"
+          },
+          "priceStartFrom": {
+            "type": "boolean"
+          },
+          "isCustom": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "isBooked",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "pinNrbe",
+      "type": "string",
+      "required": false,
+      "nullable": true
+    },
+    {
+      "name": "nrbe",
+      "type": "string",
+      "required": false,
+      "nullable": true
+    },
+    {
+      "name": "isRenewed",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "isRead",
+      "type": "boolean",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "originalPrescriptionFile",
+      "type": "RawObject",
+      "required": false,
+      "nullable": false,
+      "schema": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "file": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "location": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "originalPrescriptionId",
+      "type": "string",
+      "required": false,
+      "nullable": false
+    }
+  ],
+  "endpointBasePath": "/prescriptions",
+  "defaultState": "PUBLIC",
+  "indexes": [
+    {
+      "name": "_id",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "_id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "createdAt",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "createdAt",
+          "order": -1
+        }
+      ]
+    },
+    {
+      "name": "id",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "userIdAndStatus",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "userId",
+          "order": 1
+        },
+        {
+          "name": "status",
+          "order": 1
+        },
+        {
+          "name": "__STATE__",
+          "order": 1
+        },
+        {
+          "name": "isRead",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "prescribingDoctorAndPrescription",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "prescribingDoctorId",
+          "order": 1
+        },
+        {
+          "name": "prescriptionType",
+          "order": 1
+        },
+        {
+          "name": "createdAt",
+          "order": -1
+        }
+      ]
+    }
+  ]
+}

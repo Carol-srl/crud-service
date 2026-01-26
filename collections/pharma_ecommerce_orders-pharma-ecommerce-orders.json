@@ -1,0 +1,130 @@
+{
+  "id": "pharma_ecommerce_orders",
+  "description": "Collection of pharma_ecommerce_orders",
+  "name": "pharma_ecommerce_orders",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "userId",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "provider",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "subtotal",
+      "type": "number",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "shippingCosts",
+      "type": "number",
+      "required": false,
+      "nullable": false
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "customOrderId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "custom order id, 6 character, uniquely define an order "
+    },
+    {
+      "name": "orderId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "order id defined by the provider"
+    }
+  ],
+  "endpointBasePath": "/pharma-ecommerce-orders",
+  "defaultState": "PUBLIC",
+  "indexes": [
+    {
+      "name": "_id",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "_id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "createdAt",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "createdAt",
+          "order": -1
+        }
+      ]
+    },
+    {
+      "name": "customOrderId",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "customOrderId",
+          "order": 1
+        }
+      ]
+    }
+  ]
+}

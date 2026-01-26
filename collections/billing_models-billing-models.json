@@ -1,0 +1,112 @@
+{
+  "id": "billing_models",
+  "description": "Collection of billing_models",
+  "name": "billing_models",
+  "fields": [
+    {
+      "name": "_id",
+      "type": "ObjectId",
+      "required": true,
+      "nullable": false,
+      "description": "_id"
+    },
+    {
+      "name": "creatorId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "creatorId"
+    },
+    {
+      "name": "createdAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "createdAt"
+    },
+    {
+      "name": "updaterId",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "updaterId"
+    },
+    {
+      "name": "updatedAt",
+      "type": "Date",
+      "required": true,
+      "nullable": false,
+      "description": "updatedAt"
+    },
+    {
+      "name": "__STATE__",
+      "type": "string",
+      "required": true,
+      "nullable": false,
+      "description": "__STATE__"
+    },
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "required": true,
+      "nullable": false
+    },
+    {
+      "name": "price",
+      "type": "number",
+      "required": true,
+      "nullable": false,
+      "description": "euros"
+    },
+    {
+      "name": "frequency",
+      "type": "number",
+      "required": true,
+      "nullable": false,
+      "description": "per Month"
+    }
+  ],
+  "endpointBasePath": "/billing-models",
+  "defaultState": "PUBLIC",
+  "indexes": [
+    {
+      "name": "_id",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "_id",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "name": "createdAt",
+      "type": "normal",
+      "unique": false,
+      "fields": [
+        {
+          "name": "createdAt",
+          "order": -1
+        }
+      ]
+    },
+    {
+      "name": "id",
+      "type": "normal",
+      "unique": true,
+      "fields": [
+        {
+          "name": "id",
+          "order": 1
+        }
+      ]
+    }
+  ]
+}
