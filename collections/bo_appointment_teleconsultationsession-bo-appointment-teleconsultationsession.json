@@ -67,6 +67,13 @@
       "description": "customerId"
     },
     {
+      "name": "familyMemberId",
+      "type": "string",
+      "required": false,
+      "nullable": true,
+      "description": "familyMemberId"
+    },
+    {
       "name": "problem",
       "type": "string",
       "required": true,
