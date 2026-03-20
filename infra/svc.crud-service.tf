@@ -30,7 +30,7 @@ resource "aws_ecs_task_definition" "this" {
     network_mode             = "awsvpc"
     requires_compatibilities = ["FARGATE"]
     cpu                      = 512
-    memory                   = 2048
+    memory                   = 1024
     container_definitions = jsonencode([
     {
       name      = "crud"
