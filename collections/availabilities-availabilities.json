@@ -118,6 +118,16 @@
       "items": {
         "type": "string"
       }
+    },
+    {
+      "name": "excludedProblemTypeIds",
+      "type": "Array",
+      "required": false,
+      "nullable": false,
+      "description": "Array of problem_types for which availability will be excluded",
+      "items": {
+        "type": "string"
+      }
     }
   ],
   "endpointBasePath": "/availabilities",
