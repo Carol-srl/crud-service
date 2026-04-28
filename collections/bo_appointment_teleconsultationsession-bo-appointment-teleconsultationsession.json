@@ -188,7 +188,8 @@
         "visitStartedByDoctor": "$teleconsultation_session.visitStartedByDoctor",
         "visitEndedByDoctor": "$teleconsultation_session.visitEndedByDoctor",
         "noShow": "$teleconsultation_session.noShow",
-        "customerJoinedAt": "$teleconsultation_session.customerJoinedAt"
+        "customerJoinedAt": "$teleconsultation_session.customerJoinedAt",
+        "visitStartedAt": "$teleconsultation_session.visitStartedAt"
       }
     }
   ]
