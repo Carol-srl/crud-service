@@ -50,7 +50,7 @@ ajvFormats(ajv)
 const compatibilityValidate = ajv.compile(compatibilityModelJsonSchema)
 const validate = ajv.compile(modelJsonSchema)
 
-const PREFIX_OF_INDEX_NAMES_TO_PRESERVE = 'preserve_'
+const PREFIX_OF_INDEX_NAMES_TO_PRESERVE = ''
 const VIEW_TYPE = 'view'
 
 async function registerCrud(fastify, { modelName, isView }) {
