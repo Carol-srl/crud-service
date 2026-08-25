@@ -42,4 +42,4 @@ aws s3 sync "s3://$S3_BUCKET" "$S3_TARGET_DIR" --no-progress
 echo "Running the original CMD..."
 
 # Run the original CMD
-./node_modules/.bin/lc39 ./index.js --port=${HTTP_PORT} --log-level=${LOG_LEVEL} --prefix=${SERVICE_PREFIX} --expose-metrics=${EXPOSE_METRICS} --enable-tracing=${ENABLE_TRACING}
+./node_modules/.bin/lc39 ./index.js --port=${HTTP_PORT} --log-level=${LOG_LEVEL} --prefix=${SERVICE_PREFIX} --expose-metrics=${EXPOSE_METRICS}
