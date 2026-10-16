@@ -88,6 +88,12 @@
   "source": "customer_files",
   "pipeline": [
     {
+      "$match": {
+        "origin": { "$ne": "ONBOARDING" },
+        "name": { "$not": { "$regex": "^idDocumentPictures/" } }
+      }
+    },
+    {
       "$lookup": {
         "from": "users",
         "localField": "userId",
